@@ -63,8 +63,10 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    /* pt-[160px] para el navbar, y items-start para que no flote al centro */
-    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[160px] md:pt-0 flex items-start md:items-center">
+    /* ZONA DE SEGURIDAD MÁXIMA: 
+       pt-[200px] para asegurar que el contenido empiece debajo del Navbar cápsula.
+    */
+    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[200px] md:pt-0 flex items-start md:items-center">
       
       {/* IMÁGENES */}
       {slides.map((slide, index) => (
@@ -85,9 +87,9 @@ const Hero = () => {
         </div>
       ))}
 
-      {/* CONTENIDO TEXTUAL COMPACTO */}
+      {/* CONTENIDO TEXTUAL AJUSTADO */}
       <div className="relative z-20 w-full px-6 md:px-16 lg:px-24">
-        <div className="max-w-4xl space-y-3 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
+        <div className="max-w-4xl space-y-4 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
           
           <div>
             <span className={`inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[9px] md:text-xs font-black uppercase tracking-[0.2em]`}>
@@ -95,8 +97,8 @@ const Hero = () => {
             </span>
           </div>
 
-          {/* REDUCCIÓN DE FUENTE: text-3xl en móvil es mucho más seguro */}
-          <h1 className="text-white text-3xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
+          {/* TÍTULO PEQUEÑO PARA MÓVIL (text-2xl) */}
+          <h1 className="text-white text-3xl xs:text-4xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
             {slides[current].title.split(' ').map((word, i) => (
               <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
                 {word}
@@ -104,30 +106,20 @@ const Hero = () => {
             ))}
           </h1>
 
-          <p className="text-white/90 text-xs md:text-xl font-medium max-w-sm md:max-w-xl leading-tight md:leading-snug drop-shadow-md border-l-2 border-white/20 pl-4">
+          <p className="text-white/90 text-[11px] md:text-xl font-medium max-w-[280px] md:max-w-xl leading-tight md:leading-snug drop-shadow-md border-l-2 border-white/20 pl-4">
             {slides[current].desc}
           </p>
 
           <div className="pt-2 md:pt-6 flex flex-col sm:flex-row gap-3">
             <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-6 py-3 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
               Servicios 
-              <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </a>
             <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all text-center uppercase">
               Apoyar
             </a>
           </div>
         </div>
-      </div>
-
-      {/* CONTROLES FLECHAS (Solo Desktop) */}
-      <div className="absolute bottom-16 right-16 z-30 hidden lg:flex gap-4">
-        <button onClick={prevSlide} className="p-4 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-95">
-          <ChevronLeft size={24} />
-        </button>
-        <button onClick={nextSlide} className="p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-95">
-          <ChevronRight size={24} />
-        </button>
       </div>
 
       {/* INDICADORES DE BARRA */}
