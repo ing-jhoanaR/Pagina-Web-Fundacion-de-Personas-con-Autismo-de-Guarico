@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -8,8 +9,8 @@ const Hero = () => {
     {
       img: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000",
       tag: "Neurodiversidad Guárico",
-      title: "Santuario Sensorial", 
-      desc: "Bienestar neuroinclusivo e integración sensorial en San Juan de los Morros.", 
+      title: "Santuario Sensorial",
+      desc: "Bienestar neuroinclusivo e integración sensorial en San Juan de los Morros.",
       color: "border-fupagua-amarillo"
     },
     {
@@ -63,12 +64,8 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    /* ZONA DE SEGURIDAD MÁXIMA: 
-       pt-[200px] para asegurar que el contenido empiece debajo del Navbar cápsula.
-    */
-    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[200px] md:pt-0 flex items-start md:items-center">
+    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[180px] md:pt-0 flex items-start md:items-center">
       
-      {/* IMÁGENES */}
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -87,18 +84,16 @@ const Hero = () => {
         </div>
       ))}
 
-      {/* CONTENIDO TEXTUAL AJUSTADO */}
       <div className="relative z-20 w-full px-6 md:px-16 lg:px-24">
         <div className="max-w-4xl space-y-4 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
           
           <div>
-            <span className={`inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[9px] md:text-xs font-black uppercase tracking-[0.2em]`}>
+            <span className={`inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[9px] md:text-xs font-black uppercase tracking-[0.2em]`}>
               {slides[current].tag}
             </span>
           </div>
 
-          {/* TÍTULO PEQUEÑO PARA MÓVIL (text-2xl) */}
-          <h1 className="text-white text-3xl xs:text-4xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
+          <h1 className="text-white text-4xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
             {slides[current].title.split(' ').map((word, i) => (
               <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
                 {word}
@@ -106,26 +101,25 @@ const Hero = () => {
             ))}
           </h1>
 
-          <p className="text-white/90 text-[11px] md:text-xl font-medium max-w-[280px] md:max-w-xl leading-tight md:leading-snug drop-shadow-md border-l-2 border-white/20 pl-4">
+          <p className="text-white/90 text-sm md:text-xl font-medium max-w-[300px] md:max-w-xl leading-snug drop-shadow-md border-l-2 border-white/20 pl-4 md:pl-6">
             {slides[current].desc}
           </p>
 
-          <div className="pt-2 md:pt-6 flex flex-col sm:flex-row gap-3">
-            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-6 py-3 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
-              Servicios 
-              <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4">
+            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
+              Nuestros Servicios 
+              <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all text-center uppercase">
-              Apoyar
+            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all text-center uppercase">
+              Quiero Apoyar
             </a>
           </div>
         </div>
       </div>
 
-      {/* INDICADORES DE BARRA */}
       <div className="absolute bottom-0 left-0 w-full z-30 flex">
         {slides.map((_, i) => (
-          <div key={i} className="flex-1 h-1.5 bg-white/10 cursor-pointer relative" onClick={() => setCurrent(i)}>
+          <div key={i} className="flex-1 h-2 bg-white/10 cursor-pointer relative" onClick={() => setCurrent(i)}>
             <div className={`absolute top-0 left-0 h-full bg-fupagua-amarillo transition-all duration-[8000ms] ease-linear ${current === i ? 'w-full' : 'w-0'}`} />
           </div>
         ))}
