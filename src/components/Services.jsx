@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -126,7 +128,6 @@ const Services = () => {
           </h2>
         </div>
 
-        {/* Grid de 4 columnas para que quepan los 13 servicios */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {services.map((service) => (
             <motion.div
@@ -210,7 +211,10 @@ const Services = () => {
                             ))}
                           </div>
                           <p className="text-slate-500 text-[10px] leading-relaxed font-medium italic">"{selectedService.details}"</p>
-                          <button onClick={() => window.open(`https://wa.me/${selectedService.phone}`)} className="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-3">
+                          <button 
+                            onClick={() => window.open(`https://wa.me/${selectedService.phone}?text=${encodeURIComponent(`Hola, quisiera solicitar información sobre el servicio de: ${selectedService.title}.`)}`)} 
+                            className="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-3"
+                          >
                             <MessageCircle size={16} fill="currentColor" className="text-green-500" /> WhatsApp {selectedService.title}
                           </button>
                       </div>
@@ -231,7 +235,10 @@ const Services = () => {
                             <RatingStars />
                           </div>
                           <p className="text-slate-500 text-[10px] leading-relaxed font-medium italic mb-4 flex-grow">"{spec.bio}"</p>
-                          <button onClick={() => window.open(`https://wa.me/${spec.phone}`)} className="w-full bg-slate-900 text-white py-3.5 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-2">
+                          <button 
+                            onClick={() => window.open(`https://wa.me/${spec.phone}?text=${encodeURIComponent(`Hola, me gustaría agendar una consulta en el área de ${selectedService.title} con el/la especialista ${spec.name}.`)}`)} 
+                            className="w-full bg-slate-900 text-white py-3.5 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-2"
+                          >
                             <MessageCircle size={14} fill="currentColor" className="text-green-500" /> WhatsApp Especialista
                           </button>
                         </div>
@@ -249,4 +256,3 @@ const Services = () => {
 };
 
 export default Services;
-
