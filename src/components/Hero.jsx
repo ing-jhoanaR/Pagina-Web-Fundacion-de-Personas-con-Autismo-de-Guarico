@@ -63,8 +63,11 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    /* AJUSTE CLAVE: mt-20 empuja el carrusel bajo el navbar en móvil, pt-12 da aire interno */
-    <section className="relative min-h-[85vh] md:min-h-screen w-full overflow-hidden bg-fupagua-azul mt-20 md:mt-0 pt-12 md:pt-0">
+    /* CAMBIO CLAVE: 
+       - pt-[100px]: Crea un hueco fijo arriba para que el Navbar no tape nada.
+       - flex items-center: Mantiene el contenido centrado en el espacio restante.
+    */
+    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[100px] md:pt-0 flex items-center">
       
       {/* IMÁGENES CON EFECTO ZOOM */}
       {slides.map((slide, index) => (
@@ -85,18 +88,18 @@ const Hero = () => {
         </div>
       ))}
 
-      {/* CONTENIDO TEXTUAL: Centrado y con márgenes de seguridad */}
-      <div className="absolute inset-0 z-20 flex items-center px-6 md:px-16 lg:px-24">
-        <div className="max-w-3xl space-y-4 md:space-y-6 mt-10 md:mt-0">
+      {/* CONTENIDO TEXTUAL */}
+      <div className="relative z-20 w-full px-6 md:px-16 lg:px-24 py-10">
+        <div className="max-w-4xl space-y-6">
           
           <div className="animate-fade-in">
-            <span className={`inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em]`}>
+            <span className={`inline-block py-2 px-5 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em]`}>
               {slides[current].tag}
             </span>
           </div>
 
-          {/* AJUSTE: text-4xl en móvil para evitar que el texto largo choque con el navbar */}
-          <h1 className="text-white text-4xl md:text-6xl lg:text-8xl font-black italic uppercase leading-[0.9] tracking-tighter drop-shadow-2xl">
+          {/* AJUSTE DE TAMAÑO: text-5xl es el límite ideal para móviles */}
+          <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
             {slides[current].title.split(' ').map((word, i) => (
               <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
                 {word}
@@ -120,41 +123,26 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* CONTROLES FLECHAS (Sólo Desktop) */}
+      {/* CONTROLES FLECHAS (Desktop) */}
       <div className="absolute bottom-16 right-16 z-30 hidden lg:flex gap-4">
-        <button 
-          onClick={prevSlide}
-          className="p-4 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-95"
-        >
+        <button onClick={prevSlide} className="p-4 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-95">
           <ChevronLeft size={24} />
         </button>
-        <button 
-          onClick={nextSlide}
-          className="p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-95"
-        >
+        <button onClick={nextSlide} className="p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-95">
           <ChevronRight size={24} />
         </button>
       </div>
 
-      {/* INDICADORES DE BARRA (MÁS VISIBLES) */}
+      {/* INDICADORES DE BARRA */}
       <div className="absolute bottom-0 left-0 w-full z-30 flex">
         {slides.map((_, i) => (
-          <div 
-            key={i} 
-            className="flex-1 h-2 bg-white/10 cursor-pointer relative"
-            onClick={() => setCurrent(i)}
-          >
-            <div 
-              className={`absolute top-0 left-0 h-full bg-fupagua-amarillo transition-all duration-[8000ms] ease-linear ${
-                current === i ? 'w-full' : 'w-0'
-              }`} 
-            />
+          <div key={i} className="flex-1 h-2 bg-white/10 cursor-pointer relative" onClick={() => setCurrent(i)}>
+            <div className={`absolute top-0 left-0 h-full bg-fupagua-amarillo transition-all duration-[8000ms] ease-linear ${current === i ? 'w-full' : 'w-0'}`} />
           </div>
         ))}
       </div>
     </section>
   );
 };
-
 
 export default Hero;
