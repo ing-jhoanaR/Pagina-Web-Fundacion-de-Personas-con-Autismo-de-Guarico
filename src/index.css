@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colores oficiales FUPAGUA */
+  --color-fupagua-azul: #407ABE;
+  --color-fupagua-verde: #65AA1F;
+  --color-fupagua-rojo: #AA091D;
+  --color-fupagua-amarillo: #FFD400;
+  --color-fupagua-gris: #545454;
+
+  /* Tipografías */
+  --font-poppins: "Poppins", sans-serif;
+}
+
+/* Importar la fuente de Google */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  font-family: var(--font-poppins);
+}

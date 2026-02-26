@@ -1,0 +1,157 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const Hero = () => {
+  const [current, setCurrent] = useState(0);
+
+  const slides = [
+    {
+      img: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000",
+      tag: "Neurodiversidad Guárico",
+      title: "Santuario de los Sentidos",
+      desc: "Un espacio diseñado para la integración sensorial y el bienestar neuroinclusivo en San Juan de los Morros.",
+      color: "border-fupagua-amarillo"
+    },
+    {
+      img: "https://images.unsplash.com/photo-1594608661623-aa0bd3a69d9d?q=80&w=2000",
+      tag: "Compromiso Social",
+      title: "Cimiento de Sueños",
+      desc: "Transformando realidades con amor y ciencia. Bienvenidos a la gran familia FUPAGUA.",
+      color: "border-fupagua-verde"
+    },
+    {
+      img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2000",
+      tag: "Excelencia Profesional",
+      title: "Ciencia con Corazón",
+      desc: "Atención especializada con los más altos estándares éticos y profesionales para el desarrollo integral.",
+      color: "border-fupagua-rojo"
+    },
+    {
+      img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2000",
+      tag: "Terapias Integrales",
+      title: "Pasos Firmes",
+      desc: "Acompañamos cada etapa del desarrollo con terapias ocupacionales y psicopedagogía de vanguardia.",
+      color: "border-fupagua-azul"
+    },
+    {
+      img: "https://images.unsplash.com/photo-1536640712247-c755313928fb?q=80&w=2000",
+      tag: "Inclusión Real",
+      title: "Mundo de Colores",
+      desc: "Fomentamos la autonomía y la participación social efectiva de cada uno de nuestros niños.",
+      color: "border-fupagua-amarillo"
+    },
+    {
+      img: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2000",
+      tag: "Formación Familiar",
+      title: "Unidos por Ellos",
+      desc: "Capacitamos a las familias para ser el mejor apoyo en el hogar, creando una red de amor incondicional.",
+      color: "border-fupagua-verde"
+    }
+  ];
+
+  const nextSlide = useCallback(() => {
+    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  }, [slides.length]);
+
+  const prevSlide = () => {
+    setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 8000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
+
+  return (
+    <section className="relative h-[90vh] md:h-screen w-full overflow-hidden bg-fupagua-azul">
+      
+      {/* IMÁGENES CON EFECTO ZOOM (KEN BURNS) */}
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === current ? 'opacity-60 z-10' : 'opacity-0 z-0'
+          }`}
+        >
+          <img 
+            src={slide.img} 
+            className={`w-full h-full object-cover transition-transform duration-[8000ms] ease-linear ${
+              index === current ? 'scale-110' : 'scale-100'
+            }`} 
+            alt="Fupagua" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-fupagua-azul/90 via-fupagua-azul/40 to-transparent" />
+        </div>
+      ))}
+
+      {/* CONTENIDO TEXTUAL */}
+      <div className="absolute inset-0 z-20 flex items-center px-6 md:px-20 lg:px-32">
+        <div className="max-w-4xl space-y-6">
+          
+          <div>
+            <span className={`inline-block py-1 px-4 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-xs md:text-sm font-black uppercase tracking-[0.3em]`}>
+              {slides[current].tag}
+            </span>
+          </div>
+
+          <h1 className="text-white text-5xl md:text-8xl lg:text-9xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
+            {slides[current].title.split(' ').map((word, i) => (
+              <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
+                {word}
+              </span>
+            ))}
+          </h1>
+
+          <p className="text-white/80 text-lg md:text-2xl font-bold max-w-2xl leading-relaxed drop-shadow-md border-l-2 border-white/20 pl-6">
+            {slides[current].desc}
+          </p>
+
+          <div className="pt-8 flex flex-wrap gap-5">
+            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-10 py-4 rounded-xl font-black text-sm tracking-widest transition-all shadow-xl flex items-center gap-3 group">
+              NUESTROS SERVICIOS 
+              <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-4 rounded-xl font-black text-sm tracking-widest transition-all text-center">
+              QUIERO APOYAR
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* CONTROLES FLECHAS */}
+      <div className="absolute bottom-12 right-12 z-30 hidden md:flex gap-4">
+        <button 
+          onClick={prevSlide}
+          className="p-4 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-90"
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-90"
+        >
+          <ChevronRight size={24} />
+        </button>
+      </div>
+
+      {/* INDICADORES DE BARRA */}
+      <div className="absolute bottom-0 left-0 w-full z-30 flex">
+        {slides.map((_, i) => (
+          <div 
+            key={i} 
+            className="flex-1 h-1.5 bg-white/10 cursor-pointer relative"
+            onClick={() => setCurrent(i)}
+          >
+            <div 
+              className={`absolute top-0 left-0 h-full bg-fupagua-amarillo transition-all duration-[8000ms] ease-linear ${
+                current === i ? 'w-full' : 'w-0'
+              }`} 
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
