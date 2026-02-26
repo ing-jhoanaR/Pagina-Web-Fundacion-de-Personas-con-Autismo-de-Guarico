@@ -63,9 +63,10 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    <section className="relative h-[90vh] md:h-screen w-full overflow-hidden bg-fupagua-azul">
+    /* AJUSTE: Altura mínima para no chocar con Navbar y padding superior móvil */
+    <section className="relative min-h-[85vh] md:h-[90vh] w-full overflow-hidden bg-fupagua-azul mt-16 md:mt-0">
       
-      {/* IMÁGENES CON EFECTO ZOOM (KEN BURNS) */}
+      {/* IMÁGENES CON EFECTO ZOOM */}
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -80,21 +81,22 @@ const Hero = () => {
             }`} 
             alt="Fupagua" 
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-fupagua-azul/90 via-fupagua-azul/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-fupagua-azul/90 via-fupagua-azul/60 to-transparent" />
         </div>
       ))}
 
-      {/* CONTENIDO TEXTUAL */}
-      <div className="absolute inset-0 z-20 flex items-center px-6 md:px-20 lg:px-32">
-        <div className="max-w-4xl space-y-6">
+      {/* CONTENIDO TEXTUAL: Ajuste de padding y centrado responsivo */}
+      <div className="absolute inset-0 z-20 flex items-center px-6 md:px-16 lg:px-24">
+        <div className="max-w-3xl space-y-4 md:space-y-6">
           
           <div>
-            <span className={`inline-block py-1 px-4 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-xs md:text-sm font-black uppercase tracking-[0.3em]`}>
+            <span className={`inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em]`}>
               {slides[current].tag}
             </span>
           </div>
 
-          <h1 className="text-white text-5xl md:text-8xl lg:text-9xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
+          {/* AJUSTE: Fuentes reducidas (5xl a 7xl máximo) para evitar que tape todo */}
+          <h1 className="text-white text-4xl md:text-6xl lg:text-7xl font-black italic uppercase leading-[0.9] tracking-tighter drop-shadow-2xl">
             {slides[current].title.split(' ').map((word, i) => (
               <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
                 {word}
@@ -102,35 +104,37 @@ const Hero = () => {
             ))}
           </h1>
 
-          <p className="text-white/80 text-lg md:text-2xl font-bold max-w-2xl leading-relaxed drop-shadow-md border-l-2 border-white/20 pl-6">
+          {/* AJUSTE: Descripción más legible y corta en móviles */}
+          <p className="text-white/90 text-base md:text-lg lg:text-xl font-medium max-w-xl leading-snug drop-shadow-md border-l-2 border-white/20 pl-4 md:pl-6">
             {slides[current].desc}
           </p>
 
-          <div className="pt-8 flex flex-wrap gap-5">
-            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-10 py-4 rounded-xl font-black text-sm tracking-widest transition-all shadow-xl flex items-center gap-3 group">
+          {/* AJUSTE: Botones más compactos y responsivos */}
+          <div className="pt-4 flex flex-col sm:flex-row gap-4">
+            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-8 py-3 rounded-lg font-black text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group">
               NUESTROS SERVICIOS 
-              <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-4 rounded-xl font-black text-sm tracking-widest transition-all text-center">
+            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-3 rounded-lg font-black text-xs tracking-widest transition-all text-center">
               QUIERO APOYAR
             </a>
           </div>
         </div>
       </div>
 
-      {/* CONTROLES FLECHAS */}
-      <div className="absolute bottom-12 right-12 z-30 hidden md:flex gap-4">
+      {/* CONTROLES FLECHAS: Ajuste de posición */}
+      <div className="absolute bottom-10 right-10 z-30 hidden lg:flex gap-3">
         <button 
           onClick={prevSlide}
-          className="p-4 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-90"
+          className="p-3 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-95"
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft size={20} />
         </button>
         <button 
           onClick={nextSlide}
-          className="p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-90"
+          className="p-3 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-95"
         >
-          <ChevronRight size={24} />
+          <ChevronRight size={20} />
         </button>
       </div>
 
@@ -139,7 +143,7 @@ const Hero = () => {
         {slides.map((_, i) => (
           <div 
             key={i} 
-            className="flex-1 h-1.5 bg-white/10 cursor-pointer relative"
+            className="flex-1 h-1 bg-white/10 cursor-pointer relative"
             onClick={() => setCurrent(i)}
           >
             <div 
