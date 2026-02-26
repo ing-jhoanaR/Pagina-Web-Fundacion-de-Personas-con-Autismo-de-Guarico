@@ -124,6 +124,21 @@ const Hero = () => {
           </div>
         ))}
       </div>
+      {/* CONTROLES FLECHAS (Ahora visibles en móvil y desktop) */}
+<div className="absolute bottom-20 right-6 md:right-16 z-30 flex gap-2 md:gap-4">
+  <button 
+    onClick={prevSlide} 
+    className="p-3 md:p-4 border border-white/20 rounded-full text-white bg-black/20 backdrop-blur-sm hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-90"
+  >
+    <ChevronLeft size={20} className="md:w-6 md:h-6" />
+  </button>
+  <button 
+    onClick={nextSlide} 
+    className="p-3 md:p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-90"
+  >
+    <ChevronRight size={20} className="md:w-6 md:h-6" />
+  </button>
+</div>
     </section>
   );
 };
