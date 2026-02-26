@@ -1,66 +1,16 @@
-JavaScript
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Target, Eye, ShieldCheck, Calendar, Users, 
   Heart, Sparkles, Handshake, Camera, Image as ImageIcon,
-  UserCheck, Award, Star, ChevronDown
+  UserCheck, Award, Star
 } from 'lucide-react';
-
-// Sub-componente para cada Valor (Maneja su propio estado de hover/touch)
-const ValorCard = ({ val, idx, containerVariants, itemVariants }) => {
-  const [isActive, setIsActive] = useState(false);
-
-  return (
-    <motion.div 
-      variants={itemVariants}
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
-      onClick={() => setIsActive(!isActive)}
-      className="relative h-52 md:h-64 cursor-pointer overflow-hidden rounded-[35px] group"
-    >
-      {/* CAPA DE COLOR DE FONDO */}
-      <div className={`absolute inset-0 transition-all duration-500 ${val.color} ${
-        isActive ? 'opacity-100 scale-110' : 'opacity-0 scale-100'
-      }`} />
-      
-      {/* CONTENIDO DEL CARD */}
-      <div className={`absolute inset-0 border border-slate-200 rounded-[35px] p-5 flex flex-col items-center justify-center text-center transition-all duration-500 ${
-        isActive ? 'bg-transparent border-transparent' : 'bg-white'
-      }`}>
-        
-        {/* ICONO */}
-        <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${
-          isActive ? 'bg-white/20 rotate-12' : 'bg-slate-50'
-        }`}>
-          <div className={`transition-colors duration-500 ${
-            isActive ? 'text-white' : val.textColor
-          }`}>
-            {val.icon}
-          </div>
-        </div>
-
-        {/* TÍTULO */}
-        <span className={`font-black uppercase italic tracking-tighter text-sm md:text-xl mb-2 leading-none transition-colors duration-500 ${
-          isActive ? 'text-white' : 'text-slate-900'
-        }`}>
-          {val.title}
-        </span>
-        
-        {/* DESCRIPCIÓN */}
-        <p className={`font-bold text-[10px] md:text-xs transition-all duration-500 px-2 ${
-          isActive ? 'opacity-100 text-white translate-y-0' : 'opacity-0 translate-y-4'
-        }`}>
-          "{val.desc}"
-        </p>
-      </div>
-    </motion.div>
-  );
-};
 
 const AboutUs = () => {
   const [periodoActivo, setPeriodoActivo] = useState("2013-Actualidad");
+  // Estado para controlar qué valor está "tocado" en el móvil
+  const [valorTocado, setValorTocado] = useState(null);
 
   const consejos = [
     {
@@ -138,7 +88,7 @@ const AboutUs = () => {
     <section id="nosotros" className="relative py-16 md:py-20 bg-slate-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* --- 1. CABECERA CON HISTORIA --- */}
+        {/* --- 1. CABECERA --- */}
         <div className="grid lg:grid-cols-2 gap-10 md:gap-16 mb-20 items-center">
           <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5">
             <div className="inline-flex items-center gap-2 bg-fupagua-azul/10 px-3 py-1.5 rounded-full">
@@ -193,9 +143,6 @@ const AboutUs = () => {
             <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase italic">
               Consejo <span className="text-fupagua-azul">Directivo</span>
             </h2>
-            <p className="text-slate-500 text-sm font-medium max-w-2xl mx-auto italic">
-              Presentamos al equipo que lidera y guía nuestra fundación con compromiso y responsabilidad desde 1997.
-            </p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 mb-12">
@@ -204,9 +151,7 @@ const AboutUs = () => {
                 key={c.periodo}
                 onClick={() => setPeriodoActivo(c.periodo)}
                 className={`px-4 md:px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
-                  periodoActivo === c.periodo 
-                  ? 'bg-fupagua-azul text-white shadow-lg' 
-                  : 'bg-white text-slate-400 hover:bg-slate-100'
+                  periodoActivo === c.periodo ? 'bg-fupagua-azul text-white shadow-lg' : 'bg-white text-slate-400'
                 }`}
               >
                 {c.periodo}
@@ -222,41 +167,27 @@ const AboutUs = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2, delay: idx * 0.03 }}
-                  className="group relative bg-white rounded-[30px] p-6 shadow-sm border border-slate-100"
+                  className="bg-white rounded-[30px] p-6 shadow-sm border border-slate-100"
                 >
-                  <div className="relative z-10">
-                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-fupagua-azul group-hover:text-white transition-all">
-                      <UserCheck size={24} />
-                    </div>
-                    <h4 className="text-lg font-black text-slate-900 uppercase italic mb-1 leading-none">{m.nombre}</h4>
-                    <p className="text-fupagua-azul font-black text-[9px] uppercase tracking-widest mb-3">{m.cargo}</p>
-                    <p className="text-slate-500 text-xs leading-relaxed mb-4 italic">
-                      {m.desc || "Miembro fundamental en la trayectoria institucional."}
-                    </p>
-                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                       <span className="text-[8px] font-black text-slate-400 uppercase">Periodo {periodoActivo}</span>
-                       <Star size={12} className="text-fupagua-amarillo" />
-                    </div>
+                  <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center mb-4 text-fupagua-azul">
+                    <UserCheck size={20} />
                   </div>
+                  <h4 className="text-lg font-black text-slate-900 uppercase italic mb-1">{m.nombre}</h4>
+                  <p className="text-fupagua-azul font-black text-[9px] uppercase tracking-widest mb-2">{m.cargo}</p>
+                  <p className="text-slate-500 text-xs italic">{m.desc || "Miembro fundamental."}</p>
                 </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
         </div>
 
-        {/* --- 4. SECCIÓN DE VALORES (CORREGIDA) --- */}
-        <div className="relative mb-12">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-slate-900 rounded-[40px] p-10 md:p-14 text-center shadow-2xl relative overflow-hidden">
-            <div className="relative z-10 space-y-4">
-              <span className="inline-block bg-fupagua-azul text-white px-5 py-1.5 rounded-full font-black uppercase tracking-[0.3em] text-[10px]">Nuestros Pilares</span>
-              <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic">Valores que <span className="text-fupagua-amarillo">nos definen</span></h2>
-              <p className="text-slate-300 font-bold text-base md:text-lg max-w-2xl mx-auto italic">"Cada acción está guiada por principios éticos que aseguran una atención humana."</p>
-            </div>
-          </motion.div>
+        {/* --- 4. SECCIÓN DE VALORES (LA CORRECCIÓN) --- */}
+        <div className="mb-12">
+          <div className="bg-slate-900 rounded-[40px] p-10 text-center shadow-2xl">
+            <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic">Valores que <span className="text-fupagua-amarillo">nos definen</span></h2>
+          </div>
         </div>
 
-        {/* GRID DE VALORES DINÁMICO */}
         <motion.div 
           variants={containerVariants} 
           initial="hidden" 
@@ -264,46 +195,61 @@ const AboutUs = () => {
           viewport={{ once: true }} 
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-24"
         >
-          {valores.map((val, idx) => (
-            <ValorCard 
-              key={idx} 
-              val={val} 
-              idx={idx} 
-              containerVariants={containerVariants} 
-              itemVariants={itemVariants} 
-            />
-          ))}
+          {valores.map((val, idx) => {
+            // Lógica para saber si este card está activo
+            const estaActivo = valorTocado === idx;
+
+            return (
+              <motion.div 
+                key={idx} 
+                variants={itemVariants}
+                onMouseEnter={() => setValorTocado(idx)}
+                onMouseLeave={() => setValorTocado(null)}
+                onClick={() => setValorTocado(estaActivo ? null : idx)}
+                className="relative h-52 md:h-64 cursor-pointer overflow-hidden rounded-[35px]"
+              >
+                {/* FONDO DE COLOR */}
+                <div className={`absolute inset-0 transition-all duration-500 ${val.color} ${
+                  estaActivo ? 'opacity-100 scale-110' : 'opacity-0 scale-100'
+                }`} />
+                
+                {/* CONTENIDO BLANCO / TRANSPARENTE */}
+                <div className={`absolute inset-0 border border-slate-200 rounded-[35px] p-5 flex flex-col items-center justify-center text-center transition-all duration-500 ${
+                  estaActivo ? 'bg-transparent border-transparent' : 'bg-white'
+                }`}>
+                  <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-4 transition-all ${
+                    estaActivo ? 'bg-white/20 text-white' : `bg-slate-50 ${val.textColor}`
+                  }`}>
+                    {val.icon}
+                  </div>
+                  <span className={`font-black uppercase italic tracking-tighter text-sm md:text-xl mb-2 transition-colors ${
+                    estaActivo ? 'text-white' : 'text-slate-900'
+                  }`}>
+                    {val.title}
+                  </span>
+                  <p className={`font-bold text-[10px] md:text-xs transition-all ${
+                    estaActivo ? 'opacity-100 text-white translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}>
+                    "{val.desc}"
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {/* --- 5. GALERÍA --- */}
         <div className="mt-20">
           <div className="mb-10">
-            <div className="inline-flex items-center gap-2 bg-fupagua-verde/10 px-3 py-1.5 rounded-full mb-3">
-              <Camera size={14} className="text-fupagua-verde" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-fupagua-verde">Nuestra labor</span>
-            </div>
             <h3 className="text-3xl md:text-4xl font-black text-slate-900 uppercase italic">Fupagua <span className="text-fupagua-verde">en Acción</span></h3>
           </div>
-
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-            {[
-              { size: "h-56", title: "Terapia Grupal" },
-              { size: "h-80", title: "Actividad al Aire Libre" },
-              { size: "h-64", title: "Talleres para Padres" },
-              { size: "h-80", title: "Aprendizaje Lúdico" },
-              { size: "h-56", title: "Integración Social" },
-              { size: "h-72", title: "Celebraciones" }
-            ].map((img, idx) => (
-              <motion.div key={idx} variants={itemVariants} className={`relative ${img.size} rounded-[30px] overflow-hidden group cursor-pointer shadow-md`}>
-                <div className={`w-full h-full bg-slate-200 flex items-center justify-center`}>
-                  <ImageIcon size={40} className="text-slate-400 opacity-50" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                  <span className="text-white font-black uppercase italic text-sm">{img.title}</span>
-                </div>
-              </motion.div>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+            {[1,2,3,4,5,6].map((i) => (
+              <div key={i} className="bg-slate-200 h-64 rounded-[30px] flex items-center justify-center">
+                <ImageIcon size={40} className="text-slate-400 opacity-50" />
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
