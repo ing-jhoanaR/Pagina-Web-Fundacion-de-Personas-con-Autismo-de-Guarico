@@ -63,11 +63,12 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    /* CAMBIO CLAVE: 
-       - pt-[100px]: Crea un hueco fijo arriba para que el Navbar no tape nada.
-       - flex items-center: Mantiene el contenido centrado en el espacio restante.
+    /* AJUSTE DEFINITIVO: 
+       - pt-[120px]: Empuja el contenido hacia abajo en móvil para que no lo tape el Navbar flotante.
+       - md:pt-[140px]: Espacio extra en pantallas grandes.
+       - flex items-center: Centra el texto en el espacio restante.
     */
-    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[100px] md:pt-0 flex items-center">
+    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[120px] md:pt-[140px] flex items-start md:items-center">
       
       {/* IMÁGENES CON EFECTO ZOOM */}
       {slides.map((slide, index) => (
@@ -89,17 +90,17 @@ const Hero = () => {
       ))}
 
       {/* CONTENIDO TEXTUAL */}
-      <div className="relative z-20 w-full px-6 md:px-16 lg:px-24 py-10">
-        <div className="max-w-4xl space-y-6">
+      <div className="relative z-20 w-full px-6 md:px-16 lg:px-24">
+        <div className="max-w-4xl space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
           
-          <div className="animate-fade-in">
+          <div>
             <span className={`inline-block py-2 px-5 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em]`}>
               {slides[current].tag}
             </span>
           </div>
 
-          {/* AJUSTE DE TAMAÑO: text-5xl es el límite ideal para móviles */}
-          <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
+          {/* AJUSTE: text-5xl en móvil y leading más amplio para que no se vea amontonado */}
+          <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.9] tracking-tighter drop-shadow-2xl">
             {slides[current].title.split(' ').map((word, i) => (
               <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
                 {word}
