@@ -8,8 +8,8 @@ const Hero = () => {
     {
       img: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000",
       tag: "Neurodiversidad Guárico",
-      title: "Santuario de los Sentidos",
-      desc: "Un espacio diseñado para la integración sensorial y el bienestar neuroinclusivo en San Juan de los Morros.",
+      title: "Santuario Sensorial", 
+      desc: "Bienestar neuroinclusivo e integración sensorial en San Juan de los Morros.", 
       color: "border-fupagua-amarillo"
     },
     {
