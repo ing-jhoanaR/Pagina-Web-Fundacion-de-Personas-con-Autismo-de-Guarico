@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -64,13 +63,10 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    /* SOLUCIÓN FINAL DE ESPACIADO:
-       - pt-[180px]: Espacio masivo en móvil para que el Navbar 'burbuja' no toque el texto.
-       - flex items-start: En móvil el texto empieza arriba (en la zona segura) para evitar que crezca hacia el Navbar.
-    */
-    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[180px] md:pt-0 flex items-start md:items-center">
+    /* pt-[160px] para el navbar, y items-start para que no flote al centro */
+    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[160px] md:pt-0 flex items-start md:items-center">
       
-      {/* IMÁGENES CON EFECTO ZOOM */}
+      {/* IMÁGENES */}
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -89,21 +85,18 @@ const Hero = () => {
         </div>
       ))}
 
-      {/* CONTENIDO TEXTUAL */}
+      {/* CONTENIDO TEXTUAL COMPACTO */}
       <div className="relative z-20 w-full px-6 md:px-16 lg:px-24">
-        <div className="max-w-4xl space-y-4 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
+        <div className="max-w-4xl space-y-3 md:space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000">
           
           <div>
-            <span className={`inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em]`}>
+            <span className={`inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border-l-4 ${slides[current].color} text-white text-[9px] md:text-xs font-black uppercase tracking-[0.2em]`}>
               {slides[current].tag}
             </span>
           </div>
 
-          {/* AJUSTE DE FUENTE: 
-              - text-4xl: Tamaño reducido en móvil para que el bloque no sea tan alto.
-              - leading-[0.85]: Interlineado extra apretado para ganar espacio vertical.
-          */}
-          <h1 className="text-white text-4xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
+          {/* REDUCCIÓN DE FUENTE: text-3xl en móvil es mucho más seguro */}
+          <h1 className="text-white text-3xl md:text-7xl lg:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter drop-shadow-2xl">
             {slides[current].title.split(' ').map((word, i) => (
               <span key={i} className={i === 1 ? 'text-fupagua-amarillo block' : 'block'}>
                 {word}
@@ -111,23 +104,23 @@ const Hero = () => {
             ))}
           </h1>
 
-          <p className="text-white/90 text-sm md:text-xl font-medium max-w-xl leading-snug drop-shadow-md border-l-2 border-white/20 pl-4 md:pl-6">
+          <p className="text-white/90 text-xs md:text-xl font-medium max-w-sm md:max-w-xl leading-tight md:leading-snug drop-shadow-md border-l-2 border-white/20 pl-4">
             {slides[current].desc}
           </p>
 
-          <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4">
-            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-8 py-3.5 md:px-10 md:py-4 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
-              Nuestros Servicios 
-              <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          <div className="pt-2 md:pt-6 flex flex-col sm:flex-row gap-3">
+            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-6 py-3 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
+              Servicios 
+              <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-3.5 md:px-10 md:py-4 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all text-center uppercase">
-              Quiero Apoyar
+            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-xl font-black text-[10px] md:text-xs tracking-widest transition-all text-center uppercase">
+              Apoyar
             </a>
           </div>
         </div>
       </div>
 
-      {/* CONTROLES FLECHAS (Desktop) */}
+      {/* CONTROLES FLECHAS (Solo Desktop) */}
       <div className="absolute bottom-16 right-16 z-30 hidden lg:flex gap-4">
         <button onClick={prevSlide} className="p-4 border border-white/20 rounded-full text-white hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-95">
           <ChevronLeft size={24} />
@@ -140,7 +133,7 @@ const Hero = () => {
       {/* INDICADORES DE BARRA */}
       <div className="absolute bottom-0 left-0 w-full z-30 flex">
         {slides.map((_, i) => (
-          <div key={i} className="flex-1 h-2 bg-white/10 cursor-pointer relative" onClick={() => setCurrent(i)}>
+          <div key={i} className="flex-1 h-1.5 bg-white/10 cursor-pointer relative" onClick={() => setCurrent(i)}>
             <div className={`absolute top-0 left-0 h-full bg-fupagua-amarillo transition-all duration-[8000ms] ease-linear ${current === i ? 'w-full' : 'w-0'}`} />
           </div>
         ))}
