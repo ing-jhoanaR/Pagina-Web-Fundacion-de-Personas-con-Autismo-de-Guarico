@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { Heart, Menu, X, ChevronRight, Sparkles, Building2, HandHeart, Newspaper, ChevronDown } from 'lucide-react';
+import { Heart, Menu, X, Sparkles, Building2, HandHeart, Newspaper, ChevronDown, ArrowRight } from 'lucide-react';
 import LogoImg from '../assets/logoorigin.png';
 
 const Navbar = () => {
@@ -52,8 +52,8 @@ const Navbar = () => {
             }`} 
           />
           <div className="flex flex-col border-l-2 border-slate-200 pl-2 md:pl-3">
-            <span className="text-lg md:text-2xl font-black text-fupagua-azul leading-none uppercase tracking-tighter">
-              FUPAGUA
+            <span className="text-xl md:text-2xl font-black text-fupagua-azul leading-none uppercase tracking-tighter italic">
+              Fupagua
             </span>
             <span className="hidden sm:block text-[7px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mt-1">
               +28 Años de Excelencia
@@ -61,7 +61,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* MENÚ DESKTOP */}
+        {/* MENÚ DESKTOP (Sin cambios) */}
         <div className="hidden xl:flex items-center gap-2 ml-auto">
           {menuItems.map((item) => (
             <div key={item.name} className="relative group py-2">
@@ -94,7 +94,6 @@ const Navbar = () => {
             </div>
           ))}
 
-          {/* BOTÓN DONAR DESKTOP */}
           <a 
             href="#donar" 
             className="ml-6 bg-slate-900 text-white px-8 py-3.5 rounded-full font-black text-[11px] tracking-[0.2em] shadow-xl hover:bg-fupagua-azul hover:scale-105 transition-all flex items-center gap-2 group"
@@ -104,17 +103,17 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* BOTÓN MÓVIL */}
+        {/* BOTÓN MÓVIL (Hamburguesa) */}
         <button 
-          className="xl:hidden p-3 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 shadow-sm active:scale-95 transition-all" 
+          className="xl:hidden p-3 bg-fupagua-azul text-white rounded-2xl shadow-lg active:scale-95 transition-all" 
           onClick={() => setMobileMenuOpen(true)}
         >
           <Menu size={24} />
         </button>
 
-        {/* SIDEBAR MÓVIL */}
+        {/* SIDEBAR MÓVIL MEJORADO */}
         <div 
-          className={`fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[120] transition-opacity duration-500 ${
+          className={`fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[120] transition-opacity duration-500 ${
             mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`} 
           onClick={() => setMobileMenuOpen(false)}
@@ -125,44 +124,45 @@ const Navbar = () => {
             }`} 
             onClick={e => e.stopPropagation()}
           >
-            {/* Header Sidebar */}
-            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-white">
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black text-fupagua-azul uppercase tracking-[0.3em]">Menú Principal</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Fupagua Store & Foundation</span>
+            {/* Cabecera Sidebar */}
+            <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-white">
+              <div className="flex items-center gap-2">
+                <img src={LogoImg} className="h-8" alt="Logo" />
+                <span className="text-lg font-black text-fupagua-azul italic">FUPAGUA</span>
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
-                className="p-3 bg-slate-50 rounded-full text-slate-400 hover:bg-fupagua-rojo hover:text-white transition-all"
+                className="p-3 bg-slate-100 rounded-full text-slate-900"
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Links Sidebar */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-8">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {menuItems.map((item) => (
-                <div key={item.name}>
+                <div key={item.name} className="border-b border-slate-50 pb-4">
                   {item.isDirect ? (
                     <a 
                       href={item.href} 
                       onClick={() => setMobileMenuOpen(false)} 
-                      className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter hover:text-fupagua-azul transition-all"
+                      className="flex items-center justify-between text-2xl font-black text-slate-900 uppercase italic tracking-tighter"
                     >
                       {item.name}
+                      <ArrowRight size={20} className="text-fupagua-azul" />
                     </a>
                   ) : (
                     <div className="space-y-4">
                       <span className="text-[10px] font-black text-fupagua-amarillo uppercase tracking-[0.2em] block">{item.name}</span>
-                      <div className="grid gap-3">
+                      <div className="grid gap-2">
                         {item.subLinks.map(sub => (
                           <a 
                             key={sub.name} 
                             href={sub.href} 
                             onClick={() => setMobileMenuOpen(false)} 
-                            className="flex items-center gap-4 text-lg font-bold text-slate-600 hover:text-fupagua-azul transition-all"
+                            className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-700"
                           >
-                            <span className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-fupagua-azul">{sub.icon}</span>
+                            <span className="text-fupagua-azul">{sub.icon}</span>
                             {sub.name}
                           </a>
                         ))}
@@ -173,15 +173,18 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Footer Sidebar (Donar) */}
-            <div className="p-8 bg-slate-50 border-t border-slate-100">
+            {/* Footer Sidebar (Botón Apoyar) */}
+            <div className="p-6 bg-slate-50 border-t border-slate-100">
               <a 
                 href="#donar" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full bg-slate-900 text-white py-6 rounded-[20px] flex items-center justify-center gap-3 font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:bg-fupagua-azul transition-all"
+                className="w-full bg-fupagua-azul text-white py-5 rounded-[20px] flex items-center justify-center gap-3 font-black text-sm uppercase tracking-[0.2em] shadow-xl"
               >
-                <Heart size={20} className="text-fupagua-amarillo fill-fupagua-amarillo" /> Donar Ahora
+                <Heart size={20} className="text-fupagua-amarillo fill-fupagua-amarillo" /> Quiero Apoyar
               </a>
+              <p className="text-center mt-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                Desde 1997 San Juan de los Morros
+              </p>
             </div>
           </div>
         </div>
