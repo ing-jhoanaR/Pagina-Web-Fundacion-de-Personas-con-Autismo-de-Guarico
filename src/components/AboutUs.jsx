@@ -1,25 +1,76 @@
+JavaScript
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Target, Eye, ShieldCheck, Calendar, Users, 
   Heart, Sparkles, Handshake, Camera, Image as ImageIcon,
-  UserCheck, Award, Star
+  UserCheck, Award, Star, ChevronDown
 } from 'lucide-react';
+
+// Sub-componente para cada Valor (Maneja su propio estado de hover/touch)
+const ValorCard = ({ val, idx, containerVariants, itemVariants }) => {
+  const [isActive, setIsActive] = useState(false);
+
+  return (
+    <motion.div 
+      variants={itemVariants}
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
+      onClick={() => setIsActive(!isActive)}
+      className="relative h-52 md:h-64 cursor-pointer overflow-hidden rounded-[35px] group"
+    >
+      {/* CAPA DE COLOR DE FONDO */}
+      <div className={`absolute inset-0 transition-all duration-500 ${val.color} ${
+        isActive ? 'opacity-100 scale-110' : 'opacity-0 scale-100'
+      }`} />
+      
+      {/* CONTENIDO DEL CARD */}
+      <div className={`absolute inset-0 border border-slate-200 rounded-[35px] p-5 flex flex-col items-center justify-center text-center transition-all duration-500 ${
+        isActive ? 'bg-transparent border-transparent' : 'bg-white'
+      }`}>
+        
+        {/* ICONO */}
+        <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${
+          isActive ? 'bg-white/20 rotate-12' : 'bg-slate-50'
+        }`}>
+          <div className={`transition-colors duration-500 ${
+            isActive ? 'text-white' : val.textColor
+          }`}>
+            {val.icon}
+          </div>
+        </div>
+
+        {/* TÍTULO */}
+        <span className={`font-black uppercase italic tracking-tighter text-sm md:text-xl mb-2 leading-none transition-colors duration-500 ${
+          isActive ? 'text-white' : 'text-slate-900'
+        }`}>
+          {val.title}
+        </span>
+        
+        {/* DESCRIPCIÓN */}
+        <p className={`font-bold text-[10px] md:text-xs transition-all duration-500 px-2 ${
+          isActive ? 'opacity-100 text-white translate-y-0' : 'opacity-0 translate-y-4'
+        }`}>
+          "{val.desc}"
+        </p>
+      </div>
+    </motion.div>
+  );
+};
 
 const AboutUs = () => {
   const [periodoActivo, setPeriodoActivo] = useState("2013-Actualidad");
-  // Estado para controlar qué valor está "volteado" en móvil
-  const [valorActivo, setValorActivo] = useState(null);
 
   const consejos = [
     {
       periodo: "2013-Actualidad",
       miembros: [
-        { nombre: "Carmen Yarisma Molina", cargo: "Presidenta", desc: "Liderazgo comprometido con la excelencia.", color: "bg-fupagua-azul" },
-        { nombre: "Zaida Cortéz", cargo: "Vice Presidenta", desc: "Fortalecimiento operativo.", color: "bg-fupagua-verde" },
-        { nombre: "Sonia Castellanos", cargo: "Secretaria", desc: "Gestión administrativa.", color: "bg-fupagua-amarillo" },
-        { nombre: "Hidalia Alfonso", cargo: "Secretaria", desc: "Coordinación comunitaria.", color: "bg-fupagua-rojo" },
-        { nombre: "Egleé Lara", cargo: "Vocal", desc: "Proyectos sociales.", color: "bg-fupagua-azul" }
+        { nombre: "Carmen Yarisma Molina", cargo: "Presidenta", desc: "Liderazgo comprometido con la excelencia y la inclusión social." },
+        { nombre: "Zaida Cortéz", cargo: "Vice Presidenta", desc: "Fortalecimiento de la estructura operativa." },
+        { nombre: "Sonia Castellanos", cargo: "Secretaria", desc: "Gestión administrativa y enlace institucional." },
+        { nombre: "Hidalia Alfonso", cargo: "Secretaria", desc: "Apoyo constante en la coordinación comunitaria." },
+        { nombre: "Egleé Lara", cargo: "Vocal", desc: "Participación activa en proyectos sociales." }
       ]
     },
     {
@@ -29,14 +80,34 @@ const AboutUs = () => {
         { nombre: "Isabel Peña", cargo: "Vice Presidenta" },
         { nombre: "Marlene Mora", cargo: "Secretaria" },
         { nombre: "Hidalia Alfonso", cargo: "Secretaria" },
+        { nombre: "Ma. Rosario Mirabal", cargo: "Vocal" },
+        { nombre: "Lina Lozano", cargo: "Vocal" }
+      ]
+    },
+    {
+      periodo: "2006-2007",
+      miembros: [
+        { nombre: "Carmen Yarisma Molina", cargo: "Presidenta" },
+        { nombre: "María Carolina Maldonado", cargo: "Vice Presidenta" },
+        { nombre: "Hidalia Alfonso", cargo: "Secretaria" },
         { nombre: "Ma. Rosario Mirabal", cargo: "Vocal" }
+      ]
+    },
+    {
+      periodo: "2001-2005",
+      miembros: [
+        { nombre: "Carmen Yarisma Molina", cargo: "Presidenta" },
+        { nombre: "Pedro Mirabal", cargo: "Vice Presidente" },
+        { nombre: "Ma. Rosario Mirabal", cargo: "Secretaria" },
+        { nombre: "Lina Lozano", cargo: "Secretaria" }
       ]
     },
     {
       periodo: "1997-2000",
       miembros: [
-        { nombre: "Haydee Lozano", cargo: "Presidencia" },
+        { nombre: "Haydee Lozano / M. Antonieta Nuzzo", cargo: "Presidencia" },
         { nombre: "María Bretaña", cargo: "Vice Presidente" },
+        { nombre: "Dina Barrios", cargo: "Vice Presidente" },
         { nombre: "Ma. Rosario Mirabal", cargo: "Tesorero" }
       ]
     }
@@ -53,80 +124,187 @@ const AboutUs = () => {
     { title: "Tolerancia", color: "bg-fupagua-rojo", textColor: "text-fupagua-rojo", icon: <Heart size={24} />, desc: "Respeto profundo." }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
+
   return (
-    <section id="nosotros" className="relative py-12 md:py-20 bg-slate-50 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="nosotros" className="relative py-16 md:py-20 bg-slate-50 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
         
-        {/* CABECERA HISTORIA */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-16 items-center">
-          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-4">
-            <div className="inline-flex items-center gap-2 bg-fupagua-azul/10 px-3 py-1 rounded-full">
-              <Calendar size={12} className="text-fupagua-azul" />
-              <span className="text-[8px] font-black uppercase tracking-widest text-fupagua-azul">Desde 1997 (+28 años)</span>
+        {/* --- 1. CABECERA CON HISTORIA --- */}
+        <div className="grid lg:grid-cols-2 gap-10 md:gap-16 mb-20 items-center">
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5">
+            <div className="inline-flex items-center gap-2 bg-fupagua-azul/10 px-3 py-1.5 rounded-full">
+              <Calendar size={14} className="text-fupagua-azul" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-fupagua-azul">Trayectoria desde 1997</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase italic leading-none">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 uppercase italic leading-none">
               Nuestra <span className="text-fupagua-azul">Esencia</span>
             </h2>
-            <p className="text-slate-600 text-sm md:text-base leading-relaxed">
-              Dedicados a reconocer, respetar y defender los derechos de personas con TEA en el estado Guárico.
+            <p className="text-slate-600 text-base md:text-lg leading-relaxed">
+              Somos una entidad con espíritu social consolidado, dedicada a reconocer, respetar y defender los derechos de personas con TEA y otras discapacidades.
             </p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="bg-slate-900 p-6 md:p-10 rounded-[30px] md:rounded-[50px] text-white relative shadow-xl">
-            <Users className="text-fupagua-amarillo mb-4" size={32} />
-            <h3 className="text-lg md:text-xl font-black uppercase italic mb-2">Compromiso Familiar</h3>
-            <p className="text-slate-400 text-[11px] md:text-sm leading-relaxed italic">
-              "No solo atendemos individuos, integramos familias."
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="bg-slate-900 p-8 md:p-10 rounded-[40px] md:rounded-[60px] text-white relative shadow-2xl">
+            <Users className="text-fupagua-amarillo mb-4 md:mb-6" size={40} />
+            <h3 className="text-xl md:text-2xl font-black uppercase italic mb-3">Compromiso Familiar</h3>
+            <p className="text-slate-400 text-xs md:text-sm leading-relaxed italic">
+              "No solo atendemos individuos, integramos familias. Promovemos la participación activa y responsable de cada hogar."
             </p>
+            <div className="absolute -bottom-3 -right-3 bg-fupagua-verde w-16 h-16 rounded-full flex items-center justify-center shadow-xl">
+               <Heart className="text-white" size={28} />
+            </div>
           </motion.div>
         </div>
 
-        {/* MISIÓN Y VISIÓN */}
-        <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-20">
-          <div className="bg-white p-6 md:p-8 rounded-[30px] shadow-sm border border-slate-100">
-            <Target className="text-fupagua-azul mb-4" size={24} />
-            <h3 className="text-xl font-black uppercase italic text-slate-900 mb-2">Misión</h3>
-            <p className="text-slate-600 text-xs md:text-sm">Promover la participación activa de personas con TEA en sus comunidades.</p>
-          </div>
-          <div className="bg-white p-6 md:p-8 rounded-[30px] shadow-sm border border-slate-100">
-            <Eye className="text-fupagua-verde mb-4" size={24} />
-            <h3 className="text-xl font-black uppercase italic text-slate-900 mb-2">Visión</h3>
-            <p className="text-slate-600 text-xs md:text-sm">Ser el referente regional en defensa de derechos e integración efectiva.</p>
-          </div>
+        {/* --- 2. MISIÓN Y VISIÓN --- */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-24">
+          <motion.div whileHover={{ y: -5 }} className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-slate-100">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-fupagua-azul/10 rounded-2xl flex items-center justify-center mb-6">
+              <Target className="text-fupagua-azul" size={28} />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-black uppercase italic text-slate-900 mb-4">Misión</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">Promover que personas con TEA participen como miembros activos de sus comunidades mediante educación e investigación.</p>
+          </motion.div>
+
+          <motion.div whileHover={{ y: -5 }} className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-slate-100">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-fupagua-verde/10 rounded-2xl flex items-center justify-center mb-6">
+              <Eye className="text-fupagua-verde" size={28} />
+            </div>
+            <h3 className="text-2xl md:text-3xl font-black uppercase italic text-slate-900 mb-4">Visión</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">Ser la fundación referente donde se reconozcan y defiendan los derechos para una integración efectiva.</p>
+          </motion.div>
         </div>
 
-        {/* VALORES - AQUÍ ESTÁ LA CORRECCIÓN TÁCTIL */}
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-4xl font-black text-slate-900 uppercase italic">
-            Valores <span className="text-fupagua-azul">Fupagua</span>
-          </h2>
-          <p className="text-slate-500 text-[10px] uppercase mt-2">Toca cada tarjeta para descubrir más</p>
+        {/* --- 3. CONSEJO DIRECTIVO --- */}
+        <div className="mb-24">
+          <div className="text-center mb-12 space-y-3">
+            <div className="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-1.5 rounded-full font-black uppercase tracking-[0.2em] text-[9px]">
+              <Award size={12} className="text-fupagua-amarillo" /> Liderazgo con Propósito
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase italic">
+              Consejo <span className="text-fupagua-azul">Directivo</span>
+            </h2>
+            <p className="text-slate-500 text-sm font-medium max-w-2xl mx-auto italic">
+              Presentamos al equipo que lidera y guía nuestra fundación con compromiso y responsabilidad desde 1997.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
+            {consejos.map((c) => (
+              <button
+                key={c.periodo}
+                onClick={() => setPeriodoActivo(c.periodo)}
+                className={`px-4 md:px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
+                  periodoActivo === c.periodo 
+                  ? 'bg-fupagua-azul text-white shadow-lg' 
+                  : 'bg-white text-slate-400 hover:bg-slate-100'
+                }`}
+              >
+                {c.periodo}
+              </button>
+            ))}
+          </div>
+
+          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence mode='wait'>
+              {consejos.find(c => c.periodo === periodoActivo).miembros.map((m, idx) => (
+                <motion.div
+                  key={`${periodoActivo}-${m.nombre}`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2, delay: idx * 0.03 }}
+                  className="group relative bg-white rounded-[30px] p-6 shadow-sm border border-slate-100"
+                >
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-fupagua-azul group-hover:text-white transition-all">
+                      <UserCheck size={24} />
+                    </div>
+                    <h4 className="text-lg font-black text-slate-900 uppercase italic mb-1 leading-none">{m.nombre}</h4>
+                    <p className="text-fupagua-azul font-black text-[9px] uppercase tracking-widest mb-3">{m.cargo}</p>
+                    <p className="text-slate-500 text-xs leading-relaxed mb-4 italic">
+                      {m.desc || "Miembro fundamental en la trayectoria institucional."}
+                    </p>
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                       <span className="text-[8px] font-black text-slate-400 uppercase">Periodo {periodoActivo}</span>
+                       <Star size={12} className="text-fupagua-amarillo" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-20">
+        {/* --- 4. SECCIÓN DE VALORES (CORREGIDA) --- */}
+        <div className="relative mb-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-slate-900 rounded-[40px] p-10 md:p-14 text-center shadow-2xl relative overflow-hidden">
+            <div className="relative z-10 space-y-4">
+              <span className="inline-block bg-fupagua-azul text-white px-5 py-1.5 rounded-full font-black uppercase tracking-[0.3em] text-[10px]">Nuestros Pilares</span>
+              <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic">Valores que <span className="text-fupagua-amarillo">nos definen</span></h2>
+              <p className="text-slate-300 font-bold text-base md:text-lg max-w-2xl mx-auto italic">"Cada acción está guiada por principios éticos que aseguran una atención humana."</p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* GRID DE VALORES DINÁMICO */}
+        <motion.div 
+          variants={containerVariants} 
+          initial="hidden" 
+          whileInView="visible" 
+          viewport={{ once: true }} 
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-24"
+        >
           {valores.map((val, idx) => (
-            <motion.div 
-              key={idx}
-              onClick={() => setValorActivo(valorActivo === idx ? null : idx)}
-              className="relative h-44 md:h-64 cursor-pointer"
-            >
-              <div className={`absolute inset-0 ${val.color} rounded-[25px] transition-opacity duration-300 ${valorActivo === idx ? 'opacity-100' : 'opacity-0 lg:group-hover:opacity-100 shadow-xl'}`} />
-              
-              <div className={`absolute inset-0 bg-white border border-slate-200 rounded-[25px] p-4 flex flex-col items-center justify-center text-center transition-all ${valorActivo === idx ? 'bg-transparent border-transparent' : ''}`}>
-                <div className={`w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-3 transition-all ${valorActivo === idx ? 'bg-white/20' : ''}`}>
-                  <div className={`${valorActivo === idx ? 'text-white' : val.textColor}`}>{val.icon}</div>
-                </div>
-                <span className={`font-black uppercase italic text-sm md:text-lg mb-1 transition-colors ${valorActivo === idx ? 'text-white' : 'text-slate-900'}`}>
-                  {val.title}
-                </span>
-                <p className={`font-bold text-[9px] md:text-xs transition-all ${valorActivo === idx ? 'opacity-100 text-white' : 'opacity-0'}`}>
-                  "{val.desc}"
-                </p>
-              </div>
-            </motion.div>
+            <ValorCard 
+              key={idx} 
+              val={val} 
+              idx={idx} 
+              containerVariants={containerVariants} 
+              itemVariants={itemVariants} 
+            />
           ))}
-        </div>
+        </motion.div>
 
+        {/* --- 5. GALERÍA --- */}
+        <div className="mt-20">
+          <div className="mb-10">
+            <div className="inline-flex items-center gap-2 bg-fupagua-verde/10 px-3 py-1.5 rounded-full mb-3">
+              <Camera size={14} className="text-fupagua-verde" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-fupagua-verde">Nuestra labor</span>
+            </div>
+            <h3 className="text-3xl md:text-4xl font-black text-slate-900 uppercase italic">Fupagua <span className="text-fupagua-verde">en Acción</span></h3>
+          </div>
+
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+            {[
+              { size: "h-56", title: "Terapia Grupal" },
+              { size: "h-80", title: "Actividad al Aire Libre" },
+              { size: "h-64", title: "Talleres para Padres" },
+              { size: "h-80", title: "Aprendizaje Lúdico" },
+              { size: "h-56", title: "Integración Social" },
+              { size: "h-72", title: "Celebraciones" }
+            ].map((img, idx) => (
+              <motion.div key={idx} variants={itemVariants} className={`relative ${img.size} rounded-[30px] overflow-hidden group cursor-pointer shadow-md`}>
+                <div className={`w-full h-full bg-slate-200 flex items-center justify-center`}>
+                  <ImageIcon size={40} className="text-slate-400 opacity-50" />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                  <span className="text-white font-black uppercase italic text-sm">{img.title}</span>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );
