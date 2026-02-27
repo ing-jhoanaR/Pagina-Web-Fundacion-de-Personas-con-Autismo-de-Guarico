@@ -106,6 +106,7 @@ const Navbar = () => {
             </div>
           ))}
 
+          {/* BOTÓN DONACIÓN DESKTOP */}
           <NavHashLink 
             smooth to="/#donacion" 
             className="ml-6 bg-slate-900 text-white px-8 py-3.5 rounded-full font-black text-[11px] tracking-[0.2em] shadow-xl hover:bg-fupagua-azul hover:scale-105 active:scale-95 transition-all flex items-center gap-2 group"
@@ -115,7 +116,7 @@ const Navbar = () => {
           </NavHashLink>
         </div>
 
-        {/* BOTÓN MÓVIL */}
+        {/* BOTÓN DISPARADOR MÓVIL (Gatillo del Menú) */}
         <button 
           className="xl:hidden flex items-center gap-2 p-2 bg-slate-50 rounded-2xl border border-slate-100 active:scale-95 transition-all" 
           onClick={() => setMobileMenuOpen(true)}
@@ -126,37 +127,36 @@ const Navbar = () => {
           <span className="text-[10px] font-black uppercase tracking-widest pr-2 text-slate-600">Menú</span>
         </button>
 
-        {/* SIDEBAR MÓVIL */}
-        <div className={`fixed inset-0 z-[120] transition-all duration-500 ${mobileMenuOpen ? 'visible' : 'invisible'}`}>
+        {/* SIDEBAR MÓVIL COMPLETO */}
+        <div className={`fixed inset-0 z-[150] ${mobileMenuOpen ? 'visible' : 'invisible'}`}>
+          
+          {/* Capa de oscurecimiento total con desenfoque */}
           <div 
-            className={`absolute inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity duration-500 ease-in-out ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-500 ease-in-out ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
             onClick={closeMobile}
           />
 
-          <div className={`absolute top-0 right-0 w-[85%] max-w-sm h-screen bg-white shadow-[-20px_0_80px_rgba(0,0,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col ${
+          {/* Panel Blanco Lateral */}
+          <div className={`fixed top-0 right-0 w-[85%] max-w-sm h-screen bg-white shadow-[-20px_0_80px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`} onClick={e => e.stopPropagation()}>
             
+            {/* Header del Sidebar */}
             <div className="p-8 flex justify-between items-center border-b border-slate-50">
               <div className="flex items-center gap-3">
-                <div className="bg-fupagua-azul/5 p-2 rounded-2xl">
-                   <img src={LogoImg} className="h-10" alt="Logo" />
-                </div>
+                <img src={LogoImg} className="h-10" alt="Logo" />
                 <div className="flex flex-col">
-                  <span className="text-xl font-black text-fupagua-azul italic tracking-tighter leading-none">FUPAGUA</span>
+                  <span className="text-xl font-black text-fupagua-azul italic tracking-tighter leading-none uppercase">FUPAGUA</span>
                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">Est. 1997</span>
                 </div>
               </div>
-              <button 
-                onClick={closeMobile} 
-                className="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-900 hover:bg-fupagua-rojo hover:text-white transition-all active:scale-90"
-              >
+              <button onClick={closeMobile} className="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-900 active:scale-90">
                 <X size={24} />
               </button>
             </div>
 
-            {/* AREA DE SCROLL DEL SIDEBAR */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden px-8 py-6 space-y-8 scrollbar-hide">
+            {/* Contenido con Scroll */}
+            <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8">
               {menuItems.map((item, idx) => (
                 <div 
                   key={item.name} 
@@ -166,22 +166,22 @@ const Navbar = () => {
                   {item.isDirect ? (
                     <NavHashLink 
                       smooth to={item.href} onClick={closeMobile} 
-                      className="flex items-center justify-between text-3xl font-black text-slate-900 uppercase italic tracking-tighter hover:text-fupagua-azul transition-colors group"
+                      className="flex items-center justify-between text-3xl font-black text-slate-900 uppercase italic tracking-tighter hover:text-fupagua-azul transition-colors"
                     >
                       <span>{item.name}</span>
-                      <ArrowRight size={24} className="text-slate-200 group-hover:text-fupagua-azul" />
+                      <ArrowRight size={24} className="text-fupagua-amarillo" />
                     </NavHashLink>
                   ) : (
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
                         <span className="h-[2px] w-4 bg-fupagua-amarillo"></span>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{item.name}</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.name}</span>
                       </div>
                       <div className="grid gap-2">
                         {item.subLinks.map(sub => (
                           <NavHashLink 
                             key={sub.name} smooth to={sub.href} onClick={closeMobile} 
-                            className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl text-sm font-black text-slate-700 hover:bg-white hover:shadow-lg transition-all"
+                            className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl text-sm font-black text-slate-700 active:bg-slate-100 transition-all shadow-sm"
                           >
                             <span className="text-fupagua-azul">{sub.icon}</span>
                             {sub.name}
@@ -194,13 +194,18 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="p-8 bg-slate-50/50 border-t border-slate-100">
+            {/* FOOTER DEL SIDEBAR: BOTÓN DE DONAR MÓVIL */}
+            <div className="p-8 bg-white border-t border-slate-100 mt-auto">
               <NavHashLink 
                 smooth to="/#donacion" onClick={closeMobile}
-                className="w-full bg-slate-900 text-white py-5 rounded-[24px] flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.2em] shadow-2xl transition-all"
+                className="w-full bg-slate-900 text-white py-5 rounded-[24px] flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest shadow-[0_20px_40px_rgba(0,0,0,0.2)] active:scale-95 transition-all"
               >
-                <Heart size={20} className="text-fupagua-amarillo" /> Quiero Apoyar
+                <Heart size={20} className="text-fupagua-amarillo fill-fupagua-amarillo" /> 
+                QUIERO APOYAR AHORA
               </NavHashLink>
+              <p className="text-center text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-6">
+                Más de 28 años uniendo corazones
+              </p>
             </div>
           </div>
         </div>
