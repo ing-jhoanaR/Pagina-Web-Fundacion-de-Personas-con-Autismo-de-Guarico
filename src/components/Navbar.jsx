@@ -14,6 +14,15 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Bloquear scroll cuando el menú móvil está abierto
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [mobileMenuOpen]);
+
   const menuItems = [
     {
       name: 'Conócenos',
@@ -61,7 +70,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* MENÚ DESKTOP (Sin cambios) */}
+        {/* MENÚ DESKTOP */}
         <div className="hidden xl:flex items-center gap-2 ml-auto">
           {menuItems.map((item) => (
             <div key={item.name} className="relative group py-2">
@@ -111,13 +120,21 @@ const Navbar = () => {
           <Menu size={24} />
         </button>
 
-        {/* SIDEBAR MÓVIL MEJORADO */}
+        {/* SIDEBAR MÓVIL CON FONDO OSCURO (OVERLAY) */}
         <div 
-          className={`fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[120] transition-opacity duration-500 ${
-            mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`} 
-          onClick={() => setMobileMenuOpen(false)}
+          className={`fixed inset-0 z-[120] transition-all duration-500 ${
+            mobileMenuOpen ? 'visible' : 'invisible'
+          }`}
         >
+          {/* Fondo oscurecido */}
+          <div 
+            className={`absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-500 ${
+              mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Contenedor del Sidebar */}
           <div 
             className={`absolute top-0 right-0 w-[85%] max-w-sm h-screen bg-white shadow-2xl transition-transform duration-500 ease-out flex flex-col ${
               mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
@@ -128,11 +145,14 @@ const Navbar = () => {
             <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-white">
               <div className="flex items-center gap-2">
                 <img src={LogoImg} className="h-8" alt="Logo" />
-                <span className="text-lg font-black text-fupagua-azul italic">FUPAGUA</span>
+                <div className="flex flex-col">
+                  <span className="text-lg font-black text-fupagua-azul italic leading-none">FUPAGUA</span>
+                  <span className="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-1">Est. 1997</span>
+                </div>
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
-                className="p-3 bg-slate-100 rounded-full text-slate-900"
+                className="p-3 bg-slate-100 rounded-full text-slate-900 hover:bg-fupagua-rojo hover:text-white transition-all"
               >
                 <X size={20} />
               </button>
@@ -160,7 +180,7 @@ const Navbar = () => {
                             key={sub.name} 
                             href={sub.href} 
                             onClick={() => setMobileMenuOpen(false)} 
-                            className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-700"
+                            className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-sm font-bold text-slate-700 hover:bg-fupagua-azul/5 hover:text-fupagua-azul transition-all"
                           >
                             <span className="text-fupagua-azul">{sub.icon}</span>
                             {sub.name}
@@ -178,12 +198,12 @@ const Navbar = () => {
               <a 
                 href="#donar" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full bg-fupagua-azul text-white py-5 rounded-[20px] flex items-center justify-center gap-3 font-black text-sm uppercase tracking-[0.2em] shadow-xl"
+                className="w-full bg-slate-900 text-white py-5 rounded-[20px] flex items-center justify-center gap-3 font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:bg-fupagua-azul transition-all"
               >
                 <Heart size={20} className="text-fupagua-amarillo fill-fupagua-amarillo" /> Quiero Apoyar
               </a>
               <p className="text-center mt-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                Desde 1997 San Juan de los Morros
+                Más de 28 años transformando vidas
               </p>
             </div>
           </div>
