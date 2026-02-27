@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { NavHashLink } from 'react-router-hash-link';
 import { 
   Heart, Menu, X, Sparkles, Building2, HandHeart, 
-  Newspaper, ChevronDown, ArrowRight, Home,
-  Award, Target, Image as ImageIcon, ShoppingBag, Mail
+  Newspaper, ChevronDown, ArrowRight,
+  Award, Target, Image as ImageIcon
 } from 'lucide-react';
 import LogoImg from '../assets/logoorigin.png';
 
@@ -23,7 +23,7 @@ const Navbar = () => {
   }, [mobileMenuOpen]);
 
   const menuItems = [
-   { name: 'Inicio', href: '/#', isDirect: true },
+    { name: 'Inicio', href: '/#', isDirect: true },
     {
       name: 'Conócenos',
       subLinks: [
@@ -106,7 +106,6 @@ const Navbar = () => {
             </div>
           ))}
 
-          {/* BOTÓN DONACIÓN - Link sincronizado con id="donacion" */}
           <NavHashLink 
             smooth to="/#donacion" 
             className="ml-6 bg-slate-900 text-white px-8 py-3.5 rounded-full font-black text-[11px] tracking-[0.2em] shadow-xl hover:bg-fupagua-azul hover:scale-105 active:scale-95 transition-all flex items-center gap-2 group"
@@ -130,13 +129,15 @@ const Navbar = () => {
         {/* SIDEBAR MÓVIL */}
         <div className={`fixed inset-0 z-[120] transition-all duration-500 ${mobileMenuOpen ? 'visible' : 'invisible'}`}>
           <div 
-            className={`absolute inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity duration-500 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity duration-500 ease-in-out ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
             onClick={closeMobile}
           />
 
-          <div className={`absolute top-0 right-0 w-[85%] max-w-sm h-screen bg-white shadow-[-20px_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`} onClick={e => e.stopPropagation()}>
+          <div className={`absolute top-0 right-0 w-[85%] max-w-sm h-screen bg-white shadow-[-20px_0_80px_rgba(0,0,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col ${
+            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`} onClick={e => e.stopPropagation()}>
             
-            <div className="p-8 flex justify-between items-center">
+            <div className="p-8 flex justify-between items-center border-b border-slate-50">
               <div className="flex items-center gap-3">
                 <div className="bg-fupagua-azul/5 p-2 rounded-2xl">
                    <img src={LogoImg} className="h-10" alt="Logo" />
@@ -146,24 +147,29 @@ const Navbar = () => {
                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">Est. 1997</span>
                 </div>
               </div>
-              <button onClick={closeMobile} className="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-900 hover:bg-fupagua-rojo hover:text-white transition-all shadow-inner">
+              <button 
+                onClick={closeMobile} 
+                className="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-900 hover:bg-fupagua-rojo hover:text-white transition-all active:scale-90"
+              >
                 <X size={24} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-8 py-4 space-y-8">
-              {menuItems.map((item) => (
-                <div key={item.name} className="animate-in slide-in-from-right duration-500">
+            {/* AREA DE SCROLL DEL SIDEBAR */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-8 py-6 space-y-8 scrollbar-hide">
+              {menuItems.map((item, idx) => (
+                <div 
+                  key={item.name} 
+                  className={`transform transition-all duration-500 ${mobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}
+                  style={{ transitionDelay: `${idx * 50}ms` }}
+                >
                   {item.isDirect ? (
                     <NavHashLink 
                       smooth to={item.href} onClick={closeMobile} 
                       className="flex items-center justify-between text-3xl font-black text-slate-900 uppercase italic tracking-tighter hover:text-fupagua-azul transition-colors group"
                     >
-                      <span className="relative">
-                        {item.name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-1 bg-fupagua-amarillo group-hover:w-full transition-all duration-300"></span>
-                      </span>
-                      <ArrowRight size={24} className="text-slate-200 group-hover:text-fupagua-azul transition-colors translate-x-0 group-hover:translate-x-2" />
+                      <span>{item.name}</span>
+                      <ArrowRight size={24} className="text-slate-200 group-hover:text-fupagua-azul" />
                     </NavHashLink>
                   ) : (
                     <div className="space-y-4">
@@ -171,15 +177,13 @@ const Navbar = () => {
                         <span className="h-[2px] w-4 bg-fupagua-amarillo"></span>
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{item.name}</span>
                       </div>
-                      <div className="grid gap-3">
+                      <div className="grid gap-2">
                         {item.subLinks.map(sub => (
                           <NavHashLink 
                             key={sub.name} smooth to={sub.href} onClick={closeMobile} 
-                            className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl text-sm font-black text-slate-700 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 hover:text-fupagua-azul transition-all border border-transparent hover:border-slate-100"
+                            className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl text-sm font-black text-slate-700 hover:bg-white hover:shadow-lg transition-all"
                           >
-                            <span className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-fupagua-azul shadow-sm">
-                              {sub.icon}
-                            </span>
+                            <span className="text-fupagua-azul">{sub.icon}</span>
                             {sub.name}
                           </NavHashLink>
                         ))}
@@ -193,9 +197,9 @@ const Navbar = () => {
             <div className="p-8 bg-slate-50/50 border-t border-slate-100">
               <NavHashLink 
                 smooth to="/#donacion" onClick={closeMobile}
-                className="w-full bg-slate-900 text-white py-5 rounded-[24px] flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.2em] shadow-2xl hover:bg-fupagua-azul transition-all group"
+                className="w-full bg-slate-900 text-white py-5 rounded-[24px] flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.2em] shadow-2xl transition-all"
               >
-                <Heart size={20} className="text-fupagua-amarillo group-hover:animate-pulse" /> Quiero Apoyar
+                <Heart size={20} className="text-fupagua-amarillo" /> Quiero Apoyar
               </NavHashLink>
             </div>
           </div>
