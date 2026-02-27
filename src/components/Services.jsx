@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -195,8 +194,9 @@ const Services = () => {
                   </div>
                 ) : selectedService.isSpecialGroup ? (
                   <div className="space-y-6">
-                      <div className="h-48 rounded-[30px] overflow-hidden">
+                      <div className="h-48 rounded-[30px] overflow-hidden relative group">
                         <img src={selectedService.image} className="w-full h-full object-cover" alt={selectedService.title} />
+                        <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-all"></div>
                       </div>
                       <div className="space-y-4">
                           <div className="flex items-center gap-2 text-fupagua-azul font-black uppercase text-[9px] tracking-widest">
@@ -211,12 +211,38 @@ const Services = () => {
                             ))}
                           </div>
                           <p className="text-slate-500 text-[10px] leading-relaxed font-medium italic">"{selectedService.details}"</p>
-                          <button 
-                            onClick={() => window.open(`https://wa.me/${selectedService.phone}?text=${encodeURIComponent(`Hola, quisiera solicitar información sobre el servicio de: ${selectedService.title}.`)}`)} 
-                            className="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-3"
-                          >
-                            <MessageCircle size={16} fill="currentColor" className="text-green-500" /> WhatsApp {selectedService.title}
-                          </button>
+                          
+                          <div className="flex flex-col gap-3 pt-2">
+                            {/* BOTÓN BIBLIOTECA DIGITAL */}
+                            {selectedService.id === 12 && (
+                              <motion.a
+                                href="https://biblioteca.fupagua.org/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="w-full bg-fupagua-azul text-white py-4 rounded-xl font-black uppercase text-[9px] tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-fupagua-azul/20 border border-white/10 overflow-hidden relative group"
+                              >
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                                <Library size={16} /> Acceder a Biblioteca Digital
+                              </motion.a>
+                            )}
+
+                            <button 
+                              onClick={() => {
+                                const esBiblioteca = selectedService.id === 12;
+                                const mensaje = esBiblioteca 
+                                  ? `Hola, me comunico desde la web de Fupagua. Quisiera consultar la disponibilidad de material en la Biblioteca Juana Milano.`
+                                  : `Hola, quisiera solicitar información sobre el servicio de: ${selectedService.title}.`;
+                                
+                                window.open(`https://wa.me/${selectedService.phone}?text=${encodeURIComponent(mensaje)}`);
+                              }} 
+                              className={`w-full ${selectedService.id === 12 ? 'bg-slate-100 text-slate-900' : 'bg-slate-900 text-white'} py-4 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul hover:text-white transition-all flex items-center justify-center gap-3`}
+                            >
+                              <MessageCircle size={16} fill="currentColor" className="text-green-500" /> 
+                              {selectedService.id === 12 ? 'Consultar Bibliotecario' : `WhatsApp ${selectedService.title}`}
+                            </button>
+                          </div>
                       </div>
                   </div>
                 ) : (
