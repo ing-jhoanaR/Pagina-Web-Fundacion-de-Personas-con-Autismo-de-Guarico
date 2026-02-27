@@ -116,7 +116,7 @@ const Navbar = () => {
           </NavHashLink>
         </div>
 
-        {/* BOTÓN DISPARADOR MÓVIL */}
+        {/* BOTÓN HAMBURGUESA MÓVIL */}
         <button 
           className="xl:hidden flex items-center gap-2 p-2 bg-slate-50 rounded-2xl border border-slate-100 active:scale-95 transition-all" 
           onClick={() => setMobileMenuOpen(true)}
@@ -127,33 +127,36 @@ const Navbar = () => {
           <span className="text-[10px] font-black uppercase tracking-widest pr-2 text-slate-600">Menú</span>
         </button>
 
-        {/* SIDEBAR MÓVIL */}
-        <div className={`fixed inset-0 z-[150] ${mobileMenuOpen ? 'visible' : 'invisible'}`}>
+        {/* SIDEBAR MÓVIL COMPLETO */}
+        <div className={`fixed inset-0 z-[200] ${mobileMenuOpen ? 'visible' : 'invisible'}`}>
+          
+          {/* Fondo oscuro (Overlay) */}
           <div 
             className={`fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-500 ease-in-out ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
             onClick={closeMobile}
           />
 
+          {/* Panel Lateral */}
           <div className={`fixed top-0 right-0 w-[85%] max-w-sm h-screen bg-white shadow-[-20px_0_80px_rgba(0,0,0,0.5)] transition-transform duration-500 flex flex-col ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`} onClick={e => e.stopPropagation()}>
             
-            {/* Cabezal Sidebar (Fijo) */}
+            {/* 1. Header Fijo */}
             <div className="p-6 flex justify-between items-center border-b border-slate-50 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <img src={LogoImg} className="h-9" alt="Logo" />
                 <div className="flex flex-col">
                   <span className="text-xl font-black text-fupagua-azul italic leading-none uppercase">FUPAGUA</span>
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">+28 Años de Excelencia</span>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase mt-1">Fundada en 1997</span>
                 </div>
               </div>
-              <button onClick={closeMobile} className="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-xl text-slate-900 active:scale-90">
+              <button onClick={closeMobile} className="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-xl text-slate-900">
                 <X size={24} />
               </button>
             </div>
 
-            {/* Contenido (Con Scroll independiente) */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+            {/* 2. Cuerpo con Scroll */}
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8">
               {menuItems.map((item, idx) => (
                 <div 
                   key={item.name} 
@@ -163,13 +166,13 @@ const Navbar = () => {
                   {item.isDirect ? (
                     <NavHashLink 
                       smooth to={item.href} onClick={closeMobile} 
-                      className="flex items-center justify-between text-2xl font-black text-slate-900 uppercase italic tracking-tighter hover:text-fupagua-azul"
+                      className="flex items-center justify-between text-2xl font-black text-slate-900 uppercase italic tracking-tighter hover:text-fupagua-azul transition-colors"
                     >
                       <span>{item.name}</span>
                       <ArrowRight size={20} className="text-fupagua-amarillo" />
                     </NavHashLink>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <div className="flex items-center gap-2">
                         <span className="h-[2px] w-4 bg-fupagua-amarillo"></span>
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.name}</span>
@@ -178,7 +181,7 @@ const Navbar = () => {
                         {item.subLinks.map(sub => (
                           <NavHashLink 
                             key={sub.name} smooth to={sub.href} onClick={closeMobile} 
-                            className="flex items-center gap-4 p-3 bg-slate-50/80 rounded-2xl text-xs font-black text-slate-700 active:bg-slate-100"
+                            className="flex items-center gap-4 p-4 bg-slate-50/80 rounded-2xl text-xs font-black text-slate-700 active:bg-slate-100 transition-all shadow-sm"
                           >
                             <span className="text-fupagua-azul">{sub.icon}</span>
                             {sub.name}
@@ -191,19 +194,21 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* Footer Sidebar (Siempre visible abajo) */}
+            {/* 3. Footer Fijo con el BOTÓN REAL DE DONAR */}
             <div className="p-6 bg-white border-t border-slate-100 flex-shrink-0">
               <NavHashLink 
-                smooth to="/#donacion" onClick={closeMobile}
-                className="w-full bg-slate-900 text-white py-4 rounded-[20px] flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest shadow-xl active:scale-95"
+                smooth to="/#donacion" 
+                onClick={closeMobile}
+                className="w-full bg-slate-900 text-white py-5 rounded-[24px] flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest shadow-[0_15px_30px_rgba(0,0,0,0.2)] active:scale-95 transition-all border-2 border-transparent"
               >
                 <Heart size={20} className="text-fupagua-amarillo fill-fupagua-amarillo" /> 
-                APOYAR AHORA
+                ¡QUIERO APOYAR AHORA!
               </NavHashLink>
-              <p className="text-center text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-4">
-                Est. 1997 • Fundada hace +28 años
+              <p className="text-center text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-6">
+                +28 Años Transformando Vidas
               </p>
             </div>
+
           </div>
         </div>
       </nav>
