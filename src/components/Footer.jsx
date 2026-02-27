@@ -115,7 +115,7 @@ const Footer = () => {
                 <Mail size={18} className="text-fupagua-azul mt-1" />
                 <div className="text-sm">
                   <p className="text-slate-400 font-bold uppercase text-[10px]">Correo</p>
-                  <p className="font-bold">contacto@fupagua.org</p>
+                  <p className="font-bold">fupagua@gmail.com</p>
                 </div>
               </li>
             </ul>
