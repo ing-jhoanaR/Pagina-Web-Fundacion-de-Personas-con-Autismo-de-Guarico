@@ -1,10 +1,8 @@
-
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingBag, X, Trash2, Receipt, 
-  ChevronRight, Send, LayoutGrid 
+  ChevronRight, Send, LayoutGrid, Sparkles, Tag
 } from 'lucide-react';
 
 const categories = ["Todos", "Indumentaria", "Educativo", "Arte", "Accesorios"];
@@ -23,39 +21,25 @@ const allProducts = [
 ];
 
 const ProductCard = ({ product, onAdd, compact }) => (
-  // AJUSTE: Reducción de paddings y bordes
-  <div className="group bg-white rounded-[30px] md:rounded-[40px] p-3 md:p-4 border border-slate-100 hover:shadow-xl transition-all duration-500">
-    {/* AJUSTE: Altura de imagen controlada (max-h-80 en desktop) */}
-    <div className={`relative w-full overflow-hidden rounded-[20px] md:rounded-[30px] mb-4 shadow-inner 
-      ${compact ? 'aspect-square' : 'aspect-square md:h-72 lg:h-80'}`}>
-      
-      <img 
-        src={product.image} 
-        className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" 
-        alt={product.name} 
-      />
-      
-      <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6">
-         <button 
-           onClick={() => onAdd(product)} 
-           className="w-full bg-white text-slate-900 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-2xl active:scale-95 transition-transform"
-         >
-           + Agregar
+  <div className="group bg-white rounded-[40px] p-4 border border-slate-100 hover:shadow-2xl transition-all duration-500">
+    <div className={`relative w-full overflow-hidden rounded-[30px] mb-5 shadow-inner ${compact ? 'aspect-square' : 'aspect-square md:h-72 lg:h-80'}`}>
+      <img src={product.image} className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" alt={product.name} />
+      <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6 backdrop-blur-[2px]">
+         <button onClick={() => onAdd(product)} className="w-full bg-white text-slate-900 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl active:scale-95 transition-all hover:bg-fupagua-amarillo">
+           + Añadir a la Bolsa
          </button>
       </div>
-      
-      <span className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest shadow-sm">
+      <span className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-md">
         {product.category}
       </span>
     </div>
-
-    <div className="flex flex-col justify-between px-1">
-      <h4 className="text-sm md:text-lg font-black uppercase italic text-slate-900 leading-tight mb-1">
-        {product.name}
-      </h4>
-      <span className="text-base md:text-xl font-black text-fupagua-azul">
-        ${product.price}
-      </span>
+    <div className="flex flex-col px-1 pb-2">
+      <h4 className="text-base font-black uppercase italic text-slate-900 leading-tight mb-2 group-hover:text-fupagua-azul transition-colors">{product.name}</h4>
+      <div className="flex items-center justify-between">
+        <span className="text-xl font-black text-slate-900">${product.price}</span>
+        <div className="h-[1px] flex-grow mx-4 bg-slate-100"></div>
+        <Tag size={14} className="text-slate-200" />
+      </div>
     </div>
   </div>
 );
@@ -71,150 +55,158 @@ const Store = () => {
     setIsCartOpen(true); 
   };
 
-  const removeFromCart = (cartId) => { 
-    setCart(cart.filter(item => item.cartId !== cartId)); 
-  };
-
+  const removeFromCart = (cartId) => { setCart(cart.filter(item => item.cartId !== cartId)); };
   const total = cart.reduce((sum, item) => sum + item.price, 0);
-
-  const filteredProducts = activeCategory === "Todos" 
-    ? allProducts 
-    : allProducts.filter(p => p.category === activeCategory);
+  const filteredProducts = activeCategory === "Todos" ? allProducts : allProducts.filter(p => p.category === activeCategory);
 
   const sendToWhatsApp = () => {
-    let msg = `*FACTURA DIGITAL - FUPAGUA STORE*\n==========================\n`;
+    let msg = `*PEDIDO FUPAGUA STORE*\n==========================\n`;
     cart.forEach(i => msg += `• ${i.name.toUpperCase()} - $${i.price}\n`);
-    msg += `==========================\n*TOTAL A PAGAR: $${total}*\n\n_Hola! Deseo concretar este pedido._`;
+    msg += `==========================\n*TOTAL: $${total}*\n\n_Hola! Deseo concretar este pedido._`;
     window.open(`https://wa.me/584243390902?text=${encodeURIComponent(msg)}`);
   };
 
   return (
-    <section id="tienda" className="py-12 md:py-20 bg-white overflow-hidden min-h-screen">
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* HEADER: Ajustado para que no sea gigante */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12 md:mb-16 gap-6">
-          <div className="text-center md:text-left">
-             <span className="text-fupagua-azul font-black uppercase tracking-[0.4em] text-[10px]">Autogestión Solidaria</span>
-             <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 uppercase italic leading-[0.9] tracking-tighter mt-2">
-               Fupagua <br/><span className="text-fupagua-amarillo">Store</span>
-             </h2>
+    <section id="tienda" className="pt-32 pb-24 bg-white overflow-hidden min-h-screen relative">
+      {/* Texto de Fondo */}
+      <div className="absolute top-10 left-0 w-full overflow-hidden pointer-events-none opacity-[0.03] select-none">
+        <h2 className="text-[18vw] font-black uppercase italic leading-none whitespace-nowrap -ml-20">FUPAGUA STORE 2026</h2>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* HEADER MEJORADO */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-10">
+          <div className="max-w-2xl">
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} className="flex items-center gap-3 mb-6">
+              <span className="h-1 w-12 bg-fupagua-amarillo rounded-full"></span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">Autogestión Solidaria</span>
+            </motion.div>
+            <h2 className="text-6xl md:text-8xl font-black text-slate-900 uppercase italic leading-[0.85] tracking-tighter">
+              Fupagua <br /> 
+              <span className="relative text-fupagua-amarillo font-light italic ml-2 md:ml-4">
+                Store
+                <svg className="absolute -bottom-2 left-0 w-full h-4 text-fupagua-azul/20" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 25 0 50 5 T 100 5" stroke="currentColor" strokeWidth="6" fill="none" />
+                </svg>
+              </span>
+            </h2>
           </div>
 
           <motion.button 
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => setIsCartOpen(true)}
-            className="group relative bg-slate-50 p-2 rounded-[30px] flex items-center gap-4 pr-8 shadow-xl border border-slate-100"
+            className="group relative bg-slate-900 p-3 rounded-[35px] flex items-center gap-5 pr-10 shadow-2xl transition-all hover:bg-fupagua-azul"
           >
-            <div className="bg-slate-900 p-4 rounded-[24px] text-white group-hover:bg-fupagua-azul transition-colors">
-              <ShoppingBag className="w-6 h-6" />
+            <div className="bg-white p-4 rounded-[28px] text-slate-900 group-hover:scale-110 transition-transform">
+              <ShoppingBag className="w-7 h-7" />
             </div>
             <div className="text-left">
-              <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Tu Bolsa</p>
-              <p className="text-2xl font-black text-slate-900 leading-none">${total}</p>
+              <p className="text-[10px] font-black uppercase text-white/50 tracking-[0.2em] leading-none mb-2">Tu Bolsa</p>
+              <p className="text-3xl font-black text-white leading-none">${total}</p>
             </div>
             {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-fupagua-rojo text-white w-6 h-6 rounded-full flex items-center justify-center font-black text-[10px] border-2 border-white">
+              <span className="absolute -top-2 -right-2 bg-fupagua-amarillo text-slate-900 w-8 h-8 rounded-full flex items-center justify-center font-black text-xs border-4 border-white shadow-lg animate-bounce">
                 {cart.length}
               </span>
             )}
           </motion.button>
         </div>
 
+        {/* CONTENIDO DE LA TIENDA */}
         {!showFullCatalog ? (
-          <div className="space-y-12">
-            <div className="flex flex-col sm:flex-row justify-between items-center border-b border-slate-100 pb-6 gap-4">
-              <h3 className="text-lg md:text-xl font-black uppercase italic text-slate-300 tracking-widest">Colección Destacada</h3>
-              <button 
-                onClick={() => setShowFullCatalog(true)} 
-                className="bg-slate-900 text-white px-6 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center gap-2"
-              >
-                Ver Todo el Catálogo <LayoutGrid size={16}/>
+          <div className="space-y-16">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-8">
+              <h3 className="text-sm font-black uppercase tracking-[0.3em] text-slate-400 italic">Lanzamientos Recientes</h3>
+              <button onClick={() => setShowFullCatalog(true)} className="flex items-center gap-3 text-slate-900 font-black uppercase text-[10px] tracking-widest hover:text-fupagua-azul transition-all group">
+                Explorar Catálogo <LayoutGrid size={18} className="group-hover:rotate-90 transition-transform" />
               </button>
             </div>
-            {/* GRID REDUCIDO: 3 columnas en desktop */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
               {allProducts.slice(0, 3).map(p => <ProductCard key={p.id} product={p} onAdd={addToCart} />)}
             </div>
           </div>
         ) : (
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-12">
-            <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
-               <button onClick={() => setShowFullCatalog(false)} className="group flex items-center gap-3 font-black uppercase text-[10px] tracking-widest text-slate-400 hover:text-fupagua-azul transition-all">
-                  <div className="p-2 bg-slate-100 rounded-full group-hover:bg-fupagua-azul group-hover:text-white transition-all"><ChevronRight size={16} className="rotate-180"/></div>
-                  Volver
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
+            <div className="flex flex-col md:flex-row gap-8 justify-between items-center bg-slate-50 p-6 rounded-[35px]">
+               <button onClick={() => setShowFullCatalog(false)} className="flex items-center gap-3 font-black uppercase text-[10px] tracking-widest text-slate-500 hover:text-slate-900 transition-all">
+                  <ChevronRight size={18} className="rotate-180"/> Volver
                </button>
-               <div className="flex flex-wrap gap-2 justify-center">
+               <div className="flex flex-wrap gap-2">
                   {categories.map(cat => (
-                    <button 
-                      key={cat} onClick={() => setActiveCategory(cat)}
-                      className={`px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-fupagua-azul text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
-                    >
+                    <button key={cat} onClick={() => setActiveCategory(cat)}
+                      className={`px-6 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-400 hover:bg-slate-100'}`}>
                       {cat}
                     </button>
                   ))}
                </div>
             </div>
-            {/* GRID REDUCIDO: 4 columnas pequeñas en catálogo completo */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredProducts.map(p => <ProductCard key={p.id} product={p} onAdd={addToCart} compact />)}
             </div>
           </motion.div>
         )}
       </div>
 
-      {/* MODAL CARRITO: Ajustes de tamaño */}
+      {/* CARRITO REDISEÑADO */}
       <AnimatePresence>
         {isCartOpen && (
-          <div className="fixed inset-0 z-[3000] flex justify-end">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-            <motion.div 
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-              className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col"
-            >
-              <div className="p-8 border-b border-slate-100">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-xl md:text-2xl font-black uppercase italic text-slate-900">Tu Pedido</h4>
-                  <button onClick={() => setIsCartOpen(false)} className="bg-slate-50 p-2 rounded-full hover:bg-fupagua-rojo hover:text-white transition-all"><X size={18}/></button>
+          <div className="fixed inset-0 z-[5000] flex justify-end">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
+            <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="relative w-full max-w-md bg-white h-full shadow-[0_0_100px_rgba(0,0,0,0.2)] flex flex-col">
+              
+              <div className="p-10 border-b border-slate-50">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-fupagua-azul">Checkout</span>
+                  <button onClick={() => setIsCartOpen(false)} className="bg-slate-100 p-3 rounded-full hover:bg-slate-900 hover:text-white transition-all"><X size={20}/></button>
                 </div>
+                <h4 className="text-4xl font-black uppercase italic text-slate-900 tracking-tighter">Tu Bolsa</h4>
               </div>
 
-              <div className="flex-grow overflow-y-auto p-8 space-y-4">
+              <div className="flex-grow overflow-y-auto p-10 space-y-6">
                 {cart.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-300">
-                    <ShoppingBag size={48} strokeWidth={1}/>
-                    <p className="mt-2 font-black uppercase text-[10px] tracking-widest">Vaciío</p>
+                  <div className="h-full flex flex-col items-center justify-center opacity-20">
+                    <ShoppingBag size={80} strokeWidth={1}/>
+                    <p className="mt-4 font-black uppercase text-xs tracking-widest">Bolsa Vacía</p>
                   </div>
                 ) : (
                   cart.map(item => (
-                    <div key={item.cartId} className="flex justify-between items-center pb-4 border-b border-slate-50">
-                      <div className="flex items-center gap-4">
-                        <img src={item.image} className="w-12 h-12 rounded-xl object-cover shadow-md" alt={item.name} />
-                        <div>
-                          <p className="text-[11px] font-black uppercase italic text-slate-900 leading-tight">{item.name}</p>
-                          <p className="text-fupagua-azul font-bold text-[10px]">$ {item.price}</p>
-                        </div>
+                    <motion.div layout key={item.cartId} className="flex gap-6 items-center pb-6 border-b border-slate-50 group">
+                      <div className="w-20 h-20 rounded-[20px] overflow-hidden bg-slate-100 shrink-0">
+                        <img src={item.image} className="w-full h-full object-cover" alt={item.name} />
                       </div>
-                      <button onClick={() => removeFromCart(item.cartId)} className="text-slate-300 hover:text-fupagua-rojo"><Trash2 size={16}/></button>
-                    </div>
+                      <div className="flex-grow">
+                        <p className="text-xs font-black uppercase italic text-slate-900 leading-tight mb-1">{item.name}</p>
+                        <p className="text-fupagua-azul font-black text-lg">$ {item.price}</p>
+                      </div>
+                      <button onClick={() => removeFromCart(item.cartId)} className="p-3 text-slate-200 hover:text-fupagua-rojo hover:bg-fupagua-rojo/5 rounded-xl transition-all group-hover:text-slate-400">
+                        <Trash2 size={18}/>
+                      </button>
+                    </motion.div>
                   ))
                 )}
               </div>
 
-              <div className="p-8 bg-slate-50 rounded-t-[30px]">
-                <div className="flex justify-between items-end mb-6">
+              <div className="p-10 bg-slate-50 rounded-t-[50px] shadow-[0_-20px_50px_rgba(0,0,0,0.02)]">
+                <div className="flex justify-between items-center mb-8">
                    <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1">Total</p>
-                      <p className="text-4xl font-black text-slate-900 leading-none">$ {total}</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Inversión Total</p>
+                      <p className="text-5xl font-black text-slate-900 tracking-tighter leading-none">$ {total}</p>
                    </div>
-                   <Receipt size={32} className="text-slate-200" />
+                   <div className="p-5 bg-white rounded-[25px] shadow-sm">
+                      <Receipt size={32} className="text-fupagua-azul" />
+                   </div>
                 </div>
+                
                 <button 
                   onClick={sendToWhatsApp} disabled={cart.length === 0}
-                  className="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 hover:bg-fupagua-azul transition-all disabled:opacity-20"
+                  className="w-full bg-slate-900 text-white py-6 rounded-[25px] font-black uppercase text-[11px] tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-fupagua-azul transition-all shadow-xl disabled:opacity-20 group"
                 >
-                  <Send size={16} className="text-fupagua-amarillo" /> Procesar Pedido
+                  <Send size={18} className="text-fupagua-amarillo group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /> 
+                  Confirmar vía WhatsApp
                 </button>
+                <p className="text-center mt-6 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                   Al comprar, apoyas directamente nuestra labor de 28 años.
+                </p>
               </div>
             </motion.div>
           </div>

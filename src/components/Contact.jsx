@@ -6,7 +6,10 @@ import {
   Twitter, 
   Facebook, 
   Send, 
-  Puzzle
+  Puzzle,
+  Mail,
+  MapPin,
+  MessageCircle
 } from 'lucide-react';
 
 const Contact = () => {
@@ -19,125 +22,154 @@ const Contact = () => {
   };
 
   const socialLinks = [
-    { icon: <Instagram size={18} />, link: "https://instagram.com/fupagua", color: "hover:bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600" },
-    { icon: <Twitter size={18} />, link: "https://twitter.com/fupaguasjm", color: "hover:bg-sky-400" },
-    { icon: <Facebook size={18} />, link: "https://facebook.com/fupagua", color: "hover:bg-blue-600" },
+    { icon: <Instagram size={20} />, link: "https://instagram.com/fupagua", color: "hover:bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600" },
+    { icon: <Twitter size={20} />, link: "https://twitter.com/fupaguasjm", color: "hover:bg-sky-400" },
+    { icon: <Facebook size={20} />, link: "https://facebook.com/fupagua", color: "hover:bg-blue-600" },
   ];
 
   return (
-    /* py-16 en lugar de py-24 para reducir altura */
-    <section id="contacto" className="py-16 bg-white relative overflow-hidden">
+    <section id="contacto" className="pt-32 pb-24 bg-white relative overflow-hidden">
       
-      {/* PIEZA DECORATIVA MÁS PEQUEÑA */}
-      <motion.div 
-        animate={{ rotate: [0, 10, -10, 0], y: [0, -15, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -right-16 top-10 opacity-10 pointer-events-none"
-      >
-        <Puzzle size={250} strokeWidth={1} className="text-fupagua-azul" />
-      </motion.div>
+      {/* TEXTO DE FONDO DECORATIVO */}
+      <div className="absolute top-10 left-0 w-full overflow-hidden pointer-events-none opacity-[0.03] select-none">
+        <h2 className="text-[15vw] font-black uppercase italic leading-none whitespace-nowrap -ml-20">
+          CONTACTO • FUPAGUA
+        </h2>
+      </div>
 
-      <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-8 items-center">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        {/* TITULO PREMIUM */}
+        <div className="mb-20">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }} 
+            whileInView={{ opacity: 1, x: 0 }} 
+            className="flex items-center gap-3 mb-6"
+          >
+            <span className="h-1 w-12 bg-fupagua-rojo rounded-full"></span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">Atención Prioritaria</span>
+          </motion.div>
+
+          <div className="relative inline-block">
+            <h2 className="text-6xl md:text-8xl font-black text-slate-900 uppercase italic leading-[0.85] tracking-tighter">
+              Hablemos <br /> 
+              <span className="relative text-fupagua-azul font-light italic ml-2 md:ml-4">
+                Hoy
+                <svg className="absolute -bottom-2 left-0 w-full h-4 text-fupagua-amarillo/40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 25 0 50 5 T 100 5" stroke="currentColor" strokeWidth="6" fill="none" />
+                </svg>
+              </span>
+            </h2>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-12 items-start">
           
-          {/* COLUMNA INFO */}
-          <div className="lg:col-span-5 space-y-6">
-            <div>
-              <motion.span 
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                className="text-fupagua-rojo font-black uppercase text-[9px] tracking-[0.4em]"
-              >
-                Estamos para ti
-              </motion.span>
-              {/* Título reducido de text-7xl a text-5xl */}
-              <h2 className="text-4xl md:text-5xl font-black text-slate-900 uppercase italic leading-none tracking-tighter mt-2">
-                Hablemos <br /> <span className="text-fupagua-azul">Hoy</span>
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              {/* Bloque Teléfonos compacto */}
-              <div className="flex gap-4 items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <div className="bg-fupagua-azul p-3 rounded-xl text-white shadow-md">
-                  <Phone size={20} />
+          {/* COLUMNA INFO: Estilo Minimalista */}
+          <div className="lg:col-span-5 space-y-8">
+            <div className="space-y-6">
+              <div className="flex gap-5 items-start">
+                <div className="bg-slate-900 p-4 rounded-2xl text-white shadow-xl shadow-slate-200">
+                  <Phone size={24} />
                 </div>
                 <div>
-                  <p className="text-[9px] font-black uppercase text-slate-400">Líneas Directas</p>
-                  <p className="text-md font-black text-slate-900 leading-tight">0246-4313552 / 0424-3390902</p>
+                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Llamadas y WhatsApp</p>
+                  <p className="text-xl font-black text-slate-900 italic">0246-4313552</p>
+                  <p className="text-xl font-black text-fupagua-azul italic">0424-3390902</p>
                 </div>
               </div>
 
-              {/* Bloque Redes compacto */}
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">SÍGUENOS:</span>
-                <div className="flex gap-2">
-                  {socialLinks.map((social, idx) => (
-                    <a key={idx} href={social.link} target="_blank" rel="noreferrer"
-                      className={`p-2.5 bg-white rounded-lg shadow-sm text-slate-900 ${social.color} hover:text-white transition-all`}
-                    >
-                      {social.icon}
-                    </a>
-                  ))}
+              <div className="flex gap-5 items-start">
+                <div className="bg-slate-50 p-4 rounded-2xl text-slate-400 border border-slate-100">
+                  <MapPin size={24} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Ubicación</p>
+                  <p className="text-sm font-bold text-slate-700 leading-snug">
+                    San Juan de los Morros, <br /> Edo. Guárico, Venezuela.
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Frase motivacional pequeña */}
-            <div className="flex items-center gap-3 p-4 bg-fupagua-amarillo/10 rounded-2xl border border-fupagua-amarillo/20">
-              <Puzzle className="text-fupagua-rojo fill-fupagua-rojo" size={24} />
-              <p className="text-[11px] font-bold text-slate-700 leading-tight">
-                Cada pieza es única, <span className="uppercase font-black text-fupagua-azul">juntos formamos el todo.</span>
+            {/* Redes Sociales con estilo de la Store */}
+            <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100">
+              <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em] mb-6">Nuestra Comunidad</p>
+              <div className="flex gap-4">
+                {socialLinks.map((social, idx) => (
+                  <a key={idx} href={social.link} target="_blank" rel="noreferrer"
+                    className={`p-4 bg-white rounded-2xl shadow-sm text-slate-900 ${social.color} hover:text-white hover:scale-110 transition-all duration-300`}
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Banner de trayectoria */}
+            <div className="flex items-center gap-4 p-6 bg-fupagua-azul/5 rounded-[30px] border border-fupagua-azul/10">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+                <Puzzle className="text-fupagua-rojo" size={20} />
+              </div>
+              <p className="text-[11px] font-bold text-slate-600 uppercase tracking-tight">
+                28 años siendo la pieza fundamental <br/> 
+                <span className="text-fupagua-azul font-black">en el desarrollo de Guárico.</span>
               </p>
             </div>
           </div>
 
-          {/* COLUMNA FORMULARIO */}
+          {/* COLUMNA FORMULARIO: Estilo "Dark Boutique" */}
           <div className="lg:col-span-7">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="bg-slate-900 p-6 md:p-8 rounded-[35px] shadow-xl relative overflow-hidden"
+              className="bg-slate-900 p-8 md:p-12 rounded-[60px] shadow-2xl relative overflow-hidden group"
             >
-              <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-black uppercase text-slate-400 ml-2">Nombre</label>
+              <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:rotate-12 transition-transform duration-1000">
+                <MessageCircle size={150} />
+              </div>
+
+              <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-white/40 ml-2 tracking-widest">Tu Nombre</label>
                     <input 
-                      required type="text" placeholder="Ej. Juan Pérez"
-                      className="w-full bg-white/5 border border-white/10 p-3.5 rounded-xl text-white text-sm outline-none focus:border-fupagua-amarillo transition-all"
+                      required type="text" placeholder="Ej. Familia Pérez"
+                      className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white text-sm outline-none focus:border-fupagua-amarillo focus:bg-white/10 transition-all"
                       onChange={(e) => setFormState({...formState, name: e.target.value})}
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-black uppercase text-slate-400 ml-2">Correo</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-white/40 ml-2 tracking-widest">Email de contacto</label>
                     <input 
-                      required type="email" placeholder="juan@ejemplo.com"
-                      className="w-full bg-white/5 border border-white/10 p-3.5 rounded-xl text-white text-sm outline-none focus:border-fupagua-amarillo transition-all"
+                      required type="email" placeholder="correo@ejemplo.com"
+                      className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white text-sm outline-none focus:border-fupagua-amarillo focus:bg-white/10 transition-all"
                       onChange={(e) => setFormState({...formState, email: e.target.value})}
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black uppercase text-slate-400 ml-2">Mensaje</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-white/40 ml-2 tracking-widest">¿En qué podemos apoyarte?</label>
                   <textarea 
-                    required rows="3" placeholder="¿En qué podemos ayudarte?"
-                    className="w-full bg-white/5 border border-white/10 p-3.5 rounded-xl text-white text-sm outline-none focus:border-fupagua-amarillo transition-all resize-none"
+                    required rows="4" placeholder="Escribe tu mensaje aquí..."
+                    className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white text-sm outline-none focus:border-fupagua-amarillo focus:bg-white/10 transition-all resize-none"
                     onChange={(e) => setFormState({...formState, message: e.target.value})}
                   />
                 </div>
 
                 <button 
                   type="submit"
-                  className="w-full bg-fupagua-azul hover:bg-fupagua-amarillo hover:text-slate-900 text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-3 transition-all shadow-lg group"
+                  className="w-full bg-white hover:bg-fupagua-amarillo text-slate-900 py-6 rounded-[25px] font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-4 transition-all shadow-xl group/btn"
                 >
-                  Enviar Mensaje <Send size={16} className="group-hover:translate-x-1 transition-transform" />
+                  Enviar Mensaje <Send size={18} className="group-hover/btn:translate-x-2 group-hover/btn:-translate-y-1 transition-transform" />
                 </button>
 
-                <p className="text-center text-[8px] text-slate-500 uppercase tracking-widest">
-                  Respuesta inmediata vía <span className="text-white">WhatsApp 24/7</span>
-                </p>
+                <div className="flex items-center justify-center gap-2 pt-4 opacity-50">
+                  <span className="h-[1px] w-10 bg-white/20"></span>
+                  <p className="text-[8px] text-white uppercase tracking-[0.4em]">Respuesta vía WhatsApp</p>
+                  <span className="h-[1px] w-10 bg-white/20"></span>
+                </div>
               </form>
             </motion.div>
           </div>

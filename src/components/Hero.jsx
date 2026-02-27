@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+/* Importamos NavHashLink para que los botones internos también funcionen suavemente */
+import { NavHashLink } from 'react-router-hash-link';
 
 const Hero = () => {
   const [current, setCurrent] = useState(0);
@@ -64,7 +66,8 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[180px] md:pt-0 flex items-start md:items-center">
+    /* AGREGADO id="hero" PARA EL NAVBAR */
+    <section id="hero" className="relative min-h-screen w-full overflow-hidden bg-fupagua-azul pt-[180px] md:pt-0 flex items-start md:items-center">
       
       {slides.map((slide, index) => (
         <div
@@ -106,13 +109,16 @@ const Hero = () => {
           </p>
 
           <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4">
-            <a href="#servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
+            {/* Cambiamos <a> por <NavHashLink> para mantener el scroll suave */}
+            <NavHashLink smooth to="/servicios" className="bg-fupagua-verde hover:bg-white hover:text-fupagua-azul text-white px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all shadow-xl flex items-center justify-center gap-2 group uppercase">
               Nuestros Servicios 
               <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="#donar" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all text-center uppercase">
+            </NavHashLink>
+            
+            {/* Cambiamos el destino a /#donacion para que coincida con el Navbar */}
+            <NavHashLink smooth to="/#donacion" className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-4 rounded-xl font-black text-xs tracking-widest transition-all text-center uppercase">
               Quiero Apoyar
-            </a>
+            </NavHashLink>
           </div>
         </div>
       </div>
@@ -124,21 +130,21 @@ const Hero = () => {
           </div>
         ))}
       </div>
-      {/* CONTROLES FLECHAS (Ahora visibles en móvil y desktop) */}
-<div className="absolute bottom-20 right-6 md:right-16 z-30 flex gap-2 md:gap-4">
-  <button 
-    onClick={prevSlide} 
-    className="p-3 md:p-4 border border-white/20 rounded-full text-white bg-black/20 backdrop-blur-sm hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-90"
-  >
-    <ChevronLeft size={20} className="md:w-6 md:h-6" />
-  </button>
-  <button 
-    onClick={nextSlide} 
-    className="p-3 md:p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-90"
-  >
-    <ChevronRight size={20} className="md:w-6 md:h-6" />
-  </button>
-</div>
+
+      <div className="absolute bottom-20 right-6 md:right-16 z-30 flex gap-2 md:gap-4">
+        <button 
+          onClick={prevSlide} 
+          className="p-3 md:p-4 border border-white/20 rounded-full text-white bg-black/20 backdrop-blur-sm hover:bg-fupagua-amarillo hover:text-fupagua-azul transition-all active:scale-90"
+        >
+          <ChevronLeft size={20} className="md:w-6 md:h-6" />
+        </button>
+        <button 
+          onClick={nextSlide} 
+          className="p-3 md:p-4 bg-white text-fupagua-azul rounded-full hover:bg-fupagua-amarillo transition-all shadow-xl active:scale-90"
+        >
+          <ChevronRight size={20} className="md:w-6 md:h-6" />
+        </button>
+      </div>
     </section>
   );
 };

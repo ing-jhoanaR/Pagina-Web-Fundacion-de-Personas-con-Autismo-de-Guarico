@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Newspaper, Instagram, Calendar, ArrowUpRight, Share2, Tag, GraduationCap, Users, Heart, Lightbulb } from 'lucide-react';
+import { Newspaper, Instagram, Calendar, ArrowUpRight, Share2, Tag, GraduationCap, Users, Heart, Lightbulb, Sparkles } from 'lucide-react';
 
 const News = () => {
   const [activeTab, setActiveTab] = useState('padres');
@@ -58,33 +57,53 @@ const News = () => {
   const filteredNews = newsItems.filter(item => item.userType === activeTab);
 
   return (
-    // AJUSTE: py-24 a py-16 y min-h reducido
-    <section id="noticias" className="py-16 bg-slate-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    // AJUSTE: pt-32 para evitar choque con Navbar y pb-24 para espacio libre
+    <section id="noticias" className="pt-32 pb-24 bg-white overflow-hidden relative">
+      
+      {/* Detalle decorativo de fondo */}
+      <div className="absolute top-0 right-0 w-full h-full pointer-events-none opacity-[0.02] select-none">
+        <h2 className="text-[20vw] font-black uppercase italic leading-none text-right -mr-20">
+          NEWS
+        </h2>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        {/* Cabecera Principal */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-6">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-2 text-fupagua-azul font-black uppercase text-[9px] tracking-[0.3em] mb-3">
-              <Lightbulb size={14} className="text-fupagua-amarillo" /> Centro de Información
-            </div>
-            {/* AJUSTE: Título de 7xl a 5xl */}
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase italic leading-tight tracking-tighter">
+        {/* Cabecera Principal - TITULO MEJORADO */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-10">
+          <div className="max-w-2xl">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} 
+              whileInView={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 mb-6"
+            >
+              <div className="p-2 bg-fupagua-amarillo/20 rounded-lg">
+                <Lightbulb size={16} className="text-fupagua-amarillo" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">Centro de Información</span>
+            </motion.div>
+
+            <h2 className="text-5xl md:text-8xl font-black text-slate-900 uppercase italic leading-[0.85] tracking-tighter">
               Contenido <br /> 
-              <span className="text-fupagua-azul text-2xl md:text-4xl italic opacity-80 underline decoration-fupagua-amarillo">Para Ti</span>
+              <span className="relative text-fupagua-azul font-light italic ml-2 md:ml-4">
+                Para Ti
+                <svg className="absolute -bottom-2 left-0 w-full h-4 text-fupagua-amarillo/40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 25 0 50 5 T 100 5" stroke="currentColor" strokeWidth="6" fill="none" />
+                </svg>
+              </span>
             </h2>
           </div>
 
-          {/* Selector (Tabs) - Ajuste de padding */}
-          <div className="flex flex-wrap gap-1.5 bg-white p-1.5 rounded-2xl shadow-lg border border-slate-100">
+          {/* Selector (Tabs) */}
+          <div className="flex flex-wrap gap-2 bg-slate-50 p-2 rounded-[25px] border border-slate-100 shadow-inner">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                className={`flex items-center gap-2 px-6 py-4 rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all ${
                   activeTab === cat.id 
-                  ? `${cat.color} text-white shadow-md` 
-                  : 'text-slate-400 hover:bg-slate-50'
+                  ? `${cat.color} text-white shadow-xl scale-105` 
+                  : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
                 {cat.icon} {cat.label}
@@ -94,54 +113,54 @@ const News = () => {
         </div>
 
         {/* Grid de Noticias */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredNews.map((news) => (
               <motion.div
                 key={news.id}
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="group bg-white rounded-[35px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all flex flex-col"
+                exit={{ opacity: 0, scale: 0.9 }}
+                whileHover={{ y: -10 }}
+                className="group bg-white rounded-[45px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all flex flex-col"
               >
-                {/* Imagen - AJUSTE: Altura de h-64 a h-52 */}
-                <div className="relative h-52 overflow-hidden">
+                <div className="relative h-60 overflow-hidden">
                   <img 
                     src={news.image} 
                     alt={news.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[8px] font-black uppercase text-slate-900 flex items-center gap-2 shadow-md">
-                      <Tag size={10} className="text-fupagua-amarillo" /> {news.category}
+                  <div className="absolute top-6 left-6">
+                    <span className="bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl text-[9px] font-black uppercase text-slate-900 flex items-center gap-2 shadow-lg">
+                      <Tag size={12} className="text-fupagua-amarillo" /> {news.category}
                     </span>
                   </div>
                 </div>
 
-                {/* Contenido - AJUSTE: p-8 a p-6 */}
-                <div className="p-6 flex flex-col flex-grow">
-                  <div className="flex items-center gap-2 text-slate-400 text-[9px] font-bold uppercase mb-3">
-                    <Calendar size={10} /> {news.date}
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase mb-4 tracking-widest">
+                    <Calendar size={12} className="text-fupagua-azul" /> {news.date}
                   </div>
                   
-                  <h3 className="text-xl font-black uppercase italic text-slate-900 leading-tight mb-3 group-hover:text-fupagua-azul transition-colors">
+                  <h3 className="text-2xl font-black uppercase italic text-slate-900 leading-tight mb-4 group-hover:text-fupagua-azul transition-colors">
                     {news.title}
                   </h3>
                   
-                  <p className="text-slate-500 text-xs font-medium leading-relaxed mb-6 flex-grow">
+                  <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8 flex-grow">
                     {news.description}
                   </p>
 
-                  <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
+                  <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
                     <a 
                       href={news.link}
-                      className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-900 hover:text-fupagua-rojo transition-all"
+                      className="group/btn flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-fupagua-rojo transition-all"
                     >
-                      Más detalles <ArrowUpRight size={12} />
+                      Más detalles 
+                      <ArrowUpRight size={14} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                     </a>
-                    <button className="p-2.5 bg-slate-50 rounded-full text-slate-400 hover:bg-fupagua-azul hover:text-white transition-all">
-                      <Share2 size={14} />
+                    <button className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:bg-slate-900 hover:text-white transition-all">
+                      <Share2 size={16} />
                     </button>
                   </div>
                 </div>
@@ -150,28 +169,36 @@ const News = () => {
           </AnimatePresence>
         </div>
 
-        {/* Botón Instagram Footer - AJUSTE: Padding p-10 a p-8 */}
+        {/* Footer Instagram */}
         <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-16 p-8 bg-slate-900 rounded-[40px] text-center relative overflow-hidden"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="mt-20 p-10 md:p-14 bg-slate-900 rounded-[60px] text-center relative overflow-hidden group"
         >
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fupagua-azul via-fupagua-amarillo to-fupagua-rojo" />
           <div className="relative z-10">
-            <h4 className="text-white text-xl font-black uppercase italic mb-4">¿Quieres estar al día minuto a minuto?</h4>
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
+              <Sparkles size={14} className="text-fupagua-amarillo" />
+              <span className="text-white text-[9px] font-black uppercase tracking-[0.3em]">Actualidad Diaria</span>
+            </div>
+            <h4 className="text-white text-2xl md:text-4xl font-black uppercase italic mb-8 max-w-2xl mx-auto leading-tight">
+              ¿Quieres estar al día <br className="hidden md:block"/> minuto a minuto?
+            </h4>
             <a 
               href="https://instagram.com/fupagua" 
               target="_blank"
-              className="inline-flex items-center gap-3 bg-white px-6 py-3.5 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-fupagua-amarillo transition-all"
+              rel="noreferrer"
+              className="inline-flex items-center gap-3 bg-white px-10 py-5 rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] hover:bg-fupagua-amarillo transition-all shadow-xl shadow-white/5"
             >
-              <Instagram size={18} /> Ver Instagram
+              <Instagram size={20} /> Ver Instagram
             </a>
           </div>
-          <Instagram size={150} className="absolute -right-8 -bottom-8 text-white/5 rotate-12" />
+          <Instagram size={200} className="absolute -right-10 -bottom-10 text-white/5 rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
         </motion.div>
 
         {/* Mención Trayectoria */}
-        <div className="mt-10 text-center">
-            <p className="text-slate-400 font-bold uppercase text-[8px] tracking-[0.4em]">
+        <div className="mt-12 text-center">
+            <p className="text-slate-300 font-black uppercase text-[10px] tracking-[0.5em]">
               Desde 1997 • 28 años comunicando esperanza
             </p>
         </div>

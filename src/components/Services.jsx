@@ -6,7 +6,7 @@ import {
   MessageCircle, Stethoscope, ChevronRight, 
   Star, ClipboardCheck, Clock, 
   Smile, Waves, Library, GraduationCap, School, Users,
-  User, Send
+  User, Send, Puzzle // Importamos el icono de Puzzle
 } from 'lucide-react';
 
 // ==========================================
@@ -118,13 +118,80 @@ const Services = () => {
     </div>
   );
 
+  // Configuración de la animación de flotación para los puzzles
+  const puzzleAnimation = {
+    animate: {
+      y: [0, -15, 0], // Flotar hacia arriba y abajo
+      rotate: [0, 5, -5, 0], // Rotar ligeramente
+      transition: {
+        duration: 6,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <section id="servicios" className="relative py-20 bg-slate-50/50 overflow-hidden">
+    <section id="servicios" className="relative pt-32 pb-20 bg-slate-50/50 overflow-hidden min-h-screen">
+      
+      {/* --- FONDO DECORATIVO CON PUZZLES ANIMADOS --- */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-white to-transparent -z-0 overflow-hidden">
+        {/* Pieza 1 (Azul fupagua, arriba izquierda) */}
+        <motion.div 
+          variants={puzzleAnimation}
+          animate="animate"
+          className="absolute top-20 left-[10%] opacity-[0.03] text-fupagua-azul"
+        >
+          <Puzzle size={160} strokeWidth={1} />
+        </motion.div>
+        
+        {/* Pieza 2 (Amarillo, centro derecha) */}
+        <motion.div 
+          variants={puzzleAnimation}
+          animate="animate"
+          className="absolute top-10 right-[15%] opacity-[0.05] text-fupagua-amarillo"
+          style={{ transitionDelay: '1s' }} // Desfasar animación
+        >
+          <Puzzle size={220} strokeWidth={0.5} />
+        </motion.div>
+
+        {/* Pieza 3 (Verde sutil, abajo centro) */}
+        <motion.div 
+          variants={puzzleAnimation}
+          animate="animate"
+          className="absolute top-40 left-[45%] opacity-[0.02] text-fupagua-verde"
+          style={{ transitionDelay: '2s' }}
+        >
+          <Puzzle size={120} strokeWidth={1} />
+        </motion.div>
+      </div>
+      
       <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="mb-12">
-          <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase italic leading-none tracking-tighter">
-            Nuestros <span className="text-fupagua-azul">Servicios</span>
+        {/* CABECERA ESTÉTICA */}
+        <div className="mb-16 relative">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 mb-4"
+          >
+            <span className="h-1 w-12 bg-fupagua-amarillo rounded-full"></span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">
+              Especialidades Médicas
+            </span>
+          </motion.div>
+          
+          <h2 className="text-4xl md:text-7xl font-black text-slate-900 uppercase italic leading-none tracking-tighter">
+            Nuestros <br className="md:hidden" />
+            <span className="text-fupagua-azul relative">
+              Servicios
+              <svg className="absolute -bottom-2 left-0 w-full h-3 text-fupagua-amarillo/30 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                <path d="M0 5 Q 25 0 50 5 T 100 5" stroke="currentColor" strokeWidth="4" fill="none" />
+              </svg>
+            </span>
           </h2>
+          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-4 ml-1">
+            Atención multidisciplinaria con más de 28 años de experiencia
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -250,7 +317,7 @@ const Services = () => {
                     {selectedService.specialists.map((spec, index) => (
                       <div key={index} className="bg-slate-50 rounded-[35px] overflow-hidden flex flex-col border border-slate-100">
                         <div className="h-48 bg-slate-200">
-                           <img src={spec.image} className="w-full h-full object-cover" alt={spec.name} />
+                            <img src={spec.image} className="w-full h-full object-cover" alt={spec.name} />
                         </div>
                         <div className="p-6 flex flex-col flex-grow">
                           <div className="flex justify-between items-start mb-3">

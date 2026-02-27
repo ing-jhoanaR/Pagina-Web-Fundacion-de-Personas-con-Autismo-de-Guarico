@@ -1,143 +1,181 @@
-
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, MessageSquare, Heart, Send, Quote } from 'lucide-react';
+import { Star, MessageSquare, Heart, Send, Quote, Award } from 'lucide-react';
 
 const Testimonials = () => {
   const [userReview, setUserReview] = useState("");
   const [userName, setUserName] = useState("");
+  const [selectedService, setSelectedService] = useState("Familia Fupagua");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const [reviewsRow1, setReviewsRow1] = useState([
-    { id: 1, name: "Familia Rodríguez", service: "Evaluación Integral", text: "El diagnóstico fue muy preciso. Por fin tenemos una hoja de ruta clara.", color: "bg-blue-50" },
-    { id: 2, name: "María G. Pérez", service: "Psicopedagogía", text: "La Lcda. Marioxis es increíble. Los avances en lectura son notorios.", color: "bg-yellow-50" },
-    { id: 3, name: "Juan Castillo", service: "Fisioterapia", text: "Excelente atención y dedicación. Se nota el amor por lo que hacen.", color: "bg-green-50" },
-    { id: 4, name: "Elena de Sosa", service: "Aula Integral", text: "Mi hijo va feliz a sus clases. Gracias por crear un ambiente tan seguro.", color: "bg-red-50" },
+  const [reviews, setReviews] = useState([
+    { id: 1, name: "Familia Rodríguez", service: "Evaluación Integral", text: "El diagnóstico fue muy preciso. Por fin tenemos una hoja de ruta clara para el desarrollo de nuestro hijo.", color: "bg-blue-50/40" },
+    { id: 2, name: "María G. Pérez", service: "Psicopedagogía", text: "La Lcda. Marioxis es increíble. Los avances en lectura son notorios en muy poco tiempo.", color: "bg-slate-50" },
+    { id: 3, name: "Juan Castillo", service: "Fisioterapia", text: "Excelente atención y dedicación. Se nota el compromiso y el amor por lo que hacen en cada sesión.", color: "bg-green-50/40" },
+    { id: 4, name: "Elena de Sosa", service: "Aula Integral", text: "Mi hijo va feliz a sus clases. Gracias por crear un ambiente tan seguro y estimulante.", color: "bg-red-50/40" },
+    { id: 5, name: "Pedro Méndez", service: "Pediatría", text: "La Dra. Hetmys es muy profesional. El control de niño sano es excepcional y muy detallado.", color: "bg-slate-50" },
+    { id: 6, name: "Ana Lucía R.", service: "Terapia Ocupacional", text: "Gracias a la Lcda. Nélida, mi hija ha ganado mucha autonomía en sus actividades diarias.", color: "bg-orange-50/40" },
   ]);
-
-  const reviewsRow2 = [
-    { id: 5, name: "Pedro Méndez", service: "Pediatría", text: "La Dra. Hetmys es muy profesional. El control de niño sano es excepcional.", color: "bg-purple-50" },
-    { id: 6, name: "Ana Lucía R.", service: "Terapia Ocupacional", text: "Gracias a la Lcda. Nélida, mi hija ha ganado mucha autonomía.", color: "bg-orange-50" },
-    { id: 7, name: "Familia Vargas", service: "Música y Cultura", text: "La música abrió un canal de comunicación maravilloso.", color: "bg-pink-50" },
-    { id: 8, name: "Sra. Carmen", service: "Hidroterapia", text: "La rehabilitación en la piscina ha sido clave. Altamente recomendados.", color: "bg-cyan-50" },
-  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!userReview || !userName) return alert("Por favor, escribe tu nombre y tu mensaje.");
+    if (!userReview || !userName) return alert("Por favor, completa los campos.");
     setIsSubmitting(true);
 
     setTimeout(() => {
       const newEntry = {
         id: Date.now(),
         name: userName,
-        service: "Familia Fupagua",
+        service: selectedService,
         text: userReview,
-        color: "bg-slate-900 text-white",
+        color: "bg-slate-900 text-white shadow-2xl scale-105",
         isNew: true
       };
-      setReviewsRow1([newEntry, ...reviewsRow1]);
-      setUserReview("");
-      setUserName("");
+      
+      setReviews([newEntry, ...reviews]);
       setIsSubmitting(false);
-    }, 1000);
+      setShowSuccess(true);
+      
+      setTimeout(() => {
+        setUserReview("");
+        setUserName("");
+        setShowSuccess(false);
+      }, 3000);
+    }, 1200);
   };
 
-  const ReviewRow = ({ items, direction = 1 }) => (
-    <div className="flex overflow-hidden py-3 md:py-4">
-      <motion.div 
-        animate={{ x: direction === 1 ? [0, -1200] : [-1200, 0] }}
-        transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-        className="flex flex-nowrap gap-4 md:gap-5 min-w-full"
-      >
-        {[...items, ...items].map((review, idx) => (
-          <div 
-            key={idx} 
-            // AJUSTE: Ancho de tarjeta normalizado (320px) y padding suavizado
-            className={`flex-shrink-0 w-[260px] md:w-[320px] p-5 md:p-6 rounded-[25px] md:rounded-[30px] border border-slate-100 shadow-sm ${review.color} transition-all`}
-          >
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => <Star key={i} size={8} fill={review.isNew ? "#fff" : "#fbbf24"} className={review.isNew ? "text-white" : "text-yellow-400"} />)}
-              </div>
-              <Quote size={14} className={review.isNew ? "text-white/20" : "text-slate-300"} />
-            </div>
-            <p className={`text-[11px] md:text-[12.5px] font-medium italic mb-4 leading-relaxed ${review.isNew ? "text-white" : "text-slate-700"}`}>"{review.text}"</p>
-            <div className={`flex items-center gap-2.5 border-t pt-3 ${review.isNew ? "border-white/10" : "border-slate-200/50"}`}>
-              <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[9px] md:text-[10px] font-black italic ${review.isNew ? "bg-white text-slate-900" : "bg-slate-900 text-white"}`}>
-                {review.name.charAt(0)}
-              </div>
-              <div>
-                <h4 className={`text-[9px] md:text-[10px] font-black uppercase italic ${review.isNew ? "text-white" : "text-slate-900"}`}>{review.name}</h4>
-                <p className={`text-[7.5px] md:text-[8px] font-bold uppercase ${review.isNew ? "text-fupagua-amarillo" : "text-fupagua-azul"}`}>{review.service}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </motion.div>
-    </div>
-  );
-
   return (
-    // AJUSTE: Padding vertical normalizado de py-32 a py-20
-    <section className="py-12 md:py-20 bg-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 items-center">
-          
-          {/* COLUMNA FORMULARIO (4 de 12 columnas) */}
-          <div className="lg:col-span-4 space-y-6 md:space-y-8 order-2 lg:order-1">
-            <div className="text-center lg:text-left">
-              <h3 className="text-fupagua-azul font-black uppercase text-[9px] md:text-[10px] tracking-[0.3em] mb-3 flex items-center justify-center lg:justify-start gap-2">
-                <Heart size={14} className="fill-fupagua-azul" /> Comunidad Fupagua
-              </h3>
-              <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase italic leading-tight tracking-tighter">
-                Lo que dicen <br /> 
-                <span className="text-slate-400 font-light italic">las familias</span>
-              </h2>
-            </div>
+    <section id="testimonios" className="pt-32 pb-24 bg-white relative overflow-hidden">
+      
+      {/* TEXTO DE FONDO DECORATIVO */}
+      <div className="absolute top-10 left-0 w-full overflow-hidden pointer-events-none opacity-[0.03] select-none">
+        <h2 className="text-[15vw] font-black uppercase italic leading-none whitespace-nowrap -ml-20">
+          COMUNIDAD FUPAGUA 1997
+        </h2>
+      </div>
 
-            <form onSubmit={handleSubmit} className="bg-slate-50 p-6 md:p-7 rounded-[30px] border border-slate-100 shadow-inner space-y-4">
-              <div className="flex items-center gap-3 mb-1">
-                <div className="w-8 h-8 bg-fupagua-amarillo rounded-lg flex items-center justify-center shadow-sm">
-                  <MessageSquare size={16} className="text-slate-900" />
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        {/* TITULO MEJORADO */}
+        <div className="mb-20 relative">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }} 
+            whileInView={{ opacity: 1, x: 0 }} 
+            className="flex items-center gap-3 mb-6"
+          >
+            <span className="h-1 w-12 bg-fupagua-amarillo rounded-full"></span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">Experiencias Reales</span>
+          </motion.div>
+
+          <div className="relative inline-block">
+            <h2 className="text-5xl md:text-8xl font-black text-slate-900 uppercase italic leading-[0.85] tracking-tighter">
+              Lo que dicen <br /> 
+              <span className="relative text-slate-400 font-light italic ml-2 md:ml-4">
+                las familias
+                {/* Subrayado orgánico SVG */}
+                <svg className="absolute -bottom-2 left-0 w-full h-4 text-fupagua-amarillo/40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 25 0 50 5 T 100 5" stroke="currentColor" strokeWidth="4" fill="none" />
+                </svg>
+              </span>
+            </h2>
+          </div>
+          
+          <p className="mt-8 text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] max-w-md leading-relaxed border-l-2 border-slate-100 pl-6">
+            Más de 28 años construyendo puentes hacia el bienestar y la inclusión.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* FORMULARIO */}
+          <div className="lg:col-span-5 xl:col-span-4">
+            <div className="sticky top-32 bg-white p-8 md:p-10 rounded-[45px] border-2 border-slate-50 shadow-xl shadow-slate-200/50">
+              <div className="mb-8 flex items-center gap-4">
+                <div className="p-3 bg-fupagua-azul/10 rounded-2xl text-fupagua-azul">
+                   <MessageSquare size={24} />
                 </div>
-                <h4 className="font-black text-slate-900 uppercase italic text-[11px] md:text-xs">Tu opinión importa</h4>
+                <div>
+                  <h4 className="text-slate-900 font-black uppercase italic text-lg leading-tight">Tu opinión <br/> es valiosa</h4>
+                </div>
               </div>
 
-              <input 
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="Nombre de la familia..."
-                className="w-full bg-white border border-slate-100 rounded-xl p-3.5 text-xs focus:ring-2 focus:ring-fupagua-azul outline-none"
-              />
-              
-              <textarea 
-                value={userReview}
-                onChange={(e) => setUserReview(e.target.value)}
-                placeholder="Escribe aquí tu experiencia..."
-                className="w-full bg-white border border-slate-100 rounded-xl p-3.5 text-xs h-24 resize-none focus:ring-2 focus:ring-fupagua-azul outline-none"
-              />
-              
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full bg-slate-900 text-white py-3.5 rounded-xl font-black uppercase text-[9px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-50' : ''}`}
-              >
-                {isSubmitting ? "Enviando..." : <><Send size={12} /> Publicar Reseña</>}
-              </button>
-            </form>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase text-slate-400 ml-2 tracking-widest">Familia / Representante</label>
+                  <input required type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Tu nombre..."
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-slate-900 text-xs focus:ring-2 focus:ring-fupagua-azul outline-none transition-all" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase text-slate-400 ml-2 tracking-widest">Servicio</label>
+                  <select 
+                    value={selectedService} 
+                    onChange={(e) => setSelectedService(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-slate-900 text-xs focus:ring-2 focus:ring-fupagua-azul outline-none cursor-pointer"
+                  >
+                    <option>Evaluación Integral</option>
+                    <option>Psicopedagogía</option>
+                    <option>Terapia Ocupacional</option>
+                    <option>Fisioterapia</option>
+                    <option>Hidroterapia</option>
+                    <option>Aula Integral</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase text-slate-400 ml-2 tracking-widest">Tu Experiencia</label>
+                  <textarea required value={userReview} onChange={(e) => setUserReview(e.target.value)} placeholder="Escribe aquí..."
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-slate-900 text-xs h-36 resize-none focus:ring-2 focus:ring-fupagua-azul outline-none transition-all" />
+                </div>
+                
+                <button 
+                  type="submit" disabled={isSubmitting || showSuccess}
+                  className={`w-full py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg 
+                    ${showSuccess ? 'bg-green-500 text-white' : 'bg-slate-900 hover:bg-fupagua-azul text-white'}`}
+                >
+                  {isSubmitting ? "Enviando..." : showSuccess ? "¡Publicado!" : <><Send size={14} /> Publicar</>}
+                </button>
+              </form>
+            </div>
           </div>
 
-          {/* COLUMNA SCROLL (8 de 12 columnas) */}
-          <div className="lg:col-span-8 relative order-1 lg:order-2">
-            <div className="hidden md:block absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="hidden md:block absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-            
-            <div className="space-y-2 md:space-y-4">
-              <ReviewRow items={reviewsRow1} direction={1} />
-              <ReviewRow items={reviewsRow2} direction={-1} />
+          {/* MURO DE RESEÑAS */}
+          <div className="lg:col-span-7 xl:col-span-8">
+            <div className="columns-1 md:columns-2 gap-6 space-y-6">
+              <AnimatePresence>
+                {reviews.map((review) => (
+                  <motion.div
+                    key={review.id}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`break-inside-avoid p-8 rounded-[40px] border border-slate-100 shadow-sm relative group transition-all hover:shadow-xl ${review.color}`}
+                  >
+                    <Quote className={`absolute top-6 right-8 opacity-10 ${review.isNew ? 'text-white' : 'text-fupagua-azul'}`} size={32} />
+                    
+                    <div className="flex gap-1 mb-5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={10} fill={review.isNew ? "white" : "#fbbf24"} className={review.isNew ? "text-white" : "text-yellow-400"} />
+                      ))}
+                    </div>
+
+                    <p className={`text-[14px] font-medium italic leading-relaxed mb-8 ${review.isNew ? 'text-white/90' : 'text-slate-600'}`}>
+                      "{review.text}"
+                    </p>
+
+                    <div className={`flex items-center gap-4 border-t pt-5 ${review.isNew ? 'border-white/10' : 'border-slate-100'}`}>
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-xs font-black italic shadow-sm shrink-0 ${review.isNew ? 'bg-white text-slate-900' : 'bg-fupagua-azul text-white'}`}>
+                        {review.name.charAt(0)}
+                      </div>
+                      <div className="overflow-hidden">
+                        <h4 className={`text-[11px] font-black uppercase italic truncate ${review.isNew ? 'text-white' : 'text-slate-900'}`}>{review.name}</h4>
+                        <p className={`text-[9px] font-bold uppercase tracking-tighter ${review.isNew ? 'text-fupagua-amarillo' : 'text-fupagua-azul'}`}>{review.service}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </div>
 

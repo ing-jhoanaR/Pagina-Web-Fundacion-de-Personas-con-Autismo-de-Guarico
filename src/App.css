@@ -43,3 +43,7 @@
 html {
   scroll-behavior: smooth;
 }
+#hero, #presentacion, #nosotros, #donacion {
+  scroll-margin-top: 100px;
+}
+
