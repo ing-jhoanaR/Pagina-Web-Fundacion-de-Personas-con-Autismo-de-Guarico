@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Target, Eye, ShieldCheck, Calendar, Users, 
-  Heart, Sparkles, Handshake, Image as ImageIcon,
+  Heart, Sparkles, Handshake, 
   UserCheck, Award, Star, Quote
 } from 'lucide-react';
 
@@ -173,7 +173,7 @@ const AboutUs = () => {
           </motion.div>
         </div>
 
-        {/* --- 3. CONSEJO DIRECTIVO (ID: consejo) --- */}
+        {/* --- 3. CONSEJO DIRECTIVO --- */}
         <div id="consejo" className="mb-32 scroll-mt-24">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div className="space-y-4">
@@ -229,7 +229,7 @@ const AboutUs = () => {
           </motion.div>
         </div>
 
-        {/* --- 4. VALORES (ID: valores) --- */}
+        {/* --- 4. VALORES --- */}
         <div id="valores" className="mb-32 relative scroll-mt-24">
           <div className="bg-slate-900 rounded-[60px] p-12 md:p-20 text-center relative overflow-hidden mb-12 shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-fupagua-verde/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
@@ -285,43 +285,10 @@ const AboutUs = () => {
                     }`}>
                       "{val.desc}"
                     </p>
-                    <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full transition-all duration-500 lg:hidden ${
-                        isActivo ? 'bg-white/50' : 'bg-slate-100'
-                    }`}></div>
                   </div>
                 </motion.div>
               );
             })}
-          </motion.div>
-        </div>
-
-        {/* --- 5. GALERÍA (ID: galeria) --- */}
-        <div id="galeria" className="mt-32 scroll-mt-24">
-          <div className="flex items-center gap-4 mb-12 border-b border-slate-100 pb-8">
-            <ImageIcon size={30} className="text-fupagua-verde" />
-            <h3 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Fupagua <span className="text-fupagua-verde font-light">en Acción</span></h3>
-          </div>
-          
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {[
-              { size: "h-60", title: "Terapia Grupal" },
-              { size: "h-80", title: "Actividad al Aire Libre" },
-              { size: "h-64", title: "Talleres para Padres" },
-              { size: "h-80", title: "Aprendizaje Lúdico" },
-              { size: "h-60", title: "Integración Social" },
-              { size: "h-72", title: "Celebraciones" }
-            ].map((img, idx) => (
-              <motion.div key={idx} variants={itemVariants} className={`relative ${img.size} rounded-[35px] overflow-hidden group cursor-pointer shadow-lg bg-slate-100 border border-slate-200`}>
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-50/50 group-hover:bg-transparent transition-colors duration-500">
-                  <ImageIcon size={40} className="text-slate-300 opacity-70 group-hover:opacity-0 transition-opacity" />
-                </div>
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-fupagua-verde/80 via-fupagua-verde/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 transform translate-y-4 group-hover:translate-y-0">
-                  <span className="bg-white/20 backdrop-blur-sm inline-block self-start px-3 py-1 rounded-full text-white font-black uppercase italic text-xs mb-2">Galería</span>
-                  <h5 className="text-white font-black uppercase italic text-lg leading-tight">{img.title}</h5>
-                </div>
-              </motion.div>
-            ))}
           </motion.div>
         </div>
       </div>

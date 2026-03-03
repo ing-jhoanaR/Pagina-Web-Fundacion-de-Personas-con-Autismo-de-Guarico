@@ -1,24 +1,15 @@
-import React, { useState } from 'react';
+
+
+import React, { useState, useEffect } from 'react'; // Agregado useEffect
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingBag, X, Trash2, Receipt, 
   ChevronRight, Send, LayoutGrid, Sparkles, Tag
 } from 'lucide-react';
 
-const categories = ["Todos", "Indumentaria", "Educativo", "Arte", "Accesorios"];
-
-const allProducts = [
-  { id: 1, category: "Indumentaria", name: "Uniforme Oficial", price: 25, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=400" },
-  { id: 2, category: "Accesorios", name: "Taza 28 Años", price: 10, image: "https://images.unsplash.com/photo-1514228742587-6b1558fbed39?q=80&w=400" },
-  { id: 3, category: "Educativo", name: "Kit Psicomotricidad", price: 45, image: "https://images.unsplash.com/photo-1531346680769-a1d79b57ad5c?q=80&w=400" },
-  { id: 4, category: "Accesorios", name: "Agenda 2026", price: 12, image: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?q=80&w=400" },
-  { id: 5, category: "Indumentaria", name: "Gorra Fupagua", price: 15, image: "https://images.unsplash.com/photo-1588850561447-417f33188db0?q=80&w=400" },
-  { id: 6, category: "Arte", name: "Set Lápices Colores", price: 6, image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=400" },
-  { id: 7, category: "Accesorios", name: "Bolso Térmico", price: 18, image: "https://images.unsplash.com/photo-1544816153-12ad5d713281?q=80&w=400" },
-  { id: 8, category: "Educativo", name: "Rompecabezas", price: 22, image: "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?q=80&w=400" },
-  { id: 9, category: "Educativo", name: "Libro Cuentos", price: 20, image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400" },
-  { id: 10, category: "Accesorios", name: "Botella Tritan", price: 9, image: "https://images.unsplash.com/photo-1602143307185-8a15505566f1?q=80&w=400" }
-];
+// --- IMPORTACIONES DE FIREBASE ---
+import { db } from "../firebase"; 
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 
 const ProductCard = ({ product, onAdd, compact }) => (
   <div className="group bg-white rounded-[40px] p-4 border border-slate-100 hover:shadow-2xl transition-all duration-500">
@@ -26,7 +17,7 @@ const ProductCard = ({ product, onAdd, compact }) => (
       <img src={product.image} className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" alt={product.name} />
       <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6 backdrop-blur-[2px]">
          <button onClick={() => onAdd(product)} className="w-full bg-white text-slate-900 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl active:scale-95 transition-all hover:bg-fupagua-amarillo">
-           + Añadir a la Bolsa
+            + Añadir a la Bolsa
          </button>
       </div>
       <span className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-md">
@@ -49,6 +40,29 @@ const Store = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showFullCatalog, setShowFullCatalog] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Todos");
+  
+  // --- ESTADOS DINÁMICOS ---
+  const [allProducts, setAllProducts] = useState([]);
+  const [categories, setCategories] = useState(["Todos"]);
+
+  // --- CONEXIÓN EN TIEMPO REAL ---
+  useEffect(() => {
+    // 1. Escuchar Productos
+    const qProd = query(collection(db, "productos"), orderBy("createdAt", "desc"));
+    const unsubProd = onSnapshot(qProd, (snap) => {
+      const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAllProducts(docs);
+    });
+
+    // 2. Escuchar Categorías Dinámicas
+    const qCat = query(collection(db, "categorias"), orderBy("nombre", "asc"));
+    const unsubCat = onSnapshot(qCat, (snap) => {
+      const catsFromDB = snap.docs.map(d => d.data().nombre);
+      setCategories(["Todos", ...catsFromDB]);
+    });
+
+    return () => { unsubProd(); unsubCat(); };
+  }, []);
 
   const addToCart = (p) => { 
     setCart([...cart, { ...p, cartId: Math.random() }]); 
@@ -57,7 +71,11 @@ const Store = () => {
 
   const removeFromCart = (cartId) => { setCart(cart.filter(item => item.cartId !== cartId)); };
   const total = cart.reduce((sum, item) => sum + item.price, 0);
-  const filteredProducts = activeCategory === "Todos" ? allProducts : allProducts.filter(p => p.category === activeCategory);
+  
+  // Filtrado lógico
+  const filteredProducts = activeCategory === "Todos" 
+    ? allProducts 
+    : allProducts.filter(p => p.category === activeCategory);
 
   const sendToWhatsApp = () => {
     let msg = `*PEDIDO FUPAGUA STORE*\n==========================\n`;
@@ -74,7 +92,7 @@ const Store = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        {/* HEADER MEJORADO */}
+        {/* HEADER */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-10">
           <div className="max-w-2xl">
             <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} className="flex items-center gap-3 mb-6">
@@ -147,7 +165,7 @@ const Store = () => {
         )}
       </div>
 
-      {/* CARRITO REDISEÑADO */}
+      {/* CARRITO (EL RESTO DEL CÓDIGO SE MANTIENE IGUAL) */}
       <AnimatePresence>
         {isCartOpen && (
           <div className="fixed inset-0 z-[5000] flex justify-end">
@@ -178,7 +196,7 @@ const Store = () => {
                         <p className="text-xs font-black uppercase italic text-slate-900 leading-tight mb-1">{item.name}</p>
                         <p className="text-fupagua-azul font-black text-lg">$ {item.price}</p>
                       </div>
-                      <button onClick={() => removeFromCart(item.cartId)} className="p-3 text-slate-200 hover:text-fupagua-rojo hover:bg-fupagua-rojo/5 rounded-xl transition-all group-hover:text-slate-400">
+                      <button onClick={() => removeFromCart(item.cartId)} className="p-3 text-slate-200 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all group-hover:text-slate-400">
                         <Trash2 size={18}/>
                       </button>
                     </motion.div>
@@ -186,7 +204,7 @@ const Store = () => {
                 )}
               </div>
 
-              <div className="p-10 bg-slate-50 rounded-t-[50px] shadow-[0_-20px_50px_rgba(0,0,0,0.02)]">
+              <div className="p-10 bg-slate-50 rounded-t-[50px]">
                 <div className="flex justify-between items-center mb-8">
                    <div>
                       <p className="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Inversión Total</p>
@@ -205,7 +223,7 @@ const Store = () => {
                   Confirmar vía WhatsApp
                 </button>
                 <p className="text-center mt-6 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                   Al comprar, apoyas directamente nuestra labor de 28 años.
+                   Al comprar, apoyas directamente nuestra labor de más de 28 años.
                 </p>
               </div>
             </motion.div>

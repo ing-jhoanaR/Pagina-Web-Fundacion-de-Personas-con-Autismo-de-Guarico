@@ -1,209 +1,202 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Newspaper, Instagram, Calendar, ArrowUpRight, Share2, Tag, GraduationCap, Users, Heart, Lightbulb, Sparkles } from 'lucide-react';
+import { 
+  Newspaper, Instagram, Calendar, ArrowUpRight, Share2, Tag, 
+  GraduationCap, Users, Heart, Lightbulb, Sparkles, Play, ExternalLink, Youtube, Filter
+} from 'lucide-react';
+
+import { db } from "../firebase"; 
+import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
 
 const News = () => {
-  const [activeTab, setActiveTab] = useState('padres');
+  // Estados para el doble filtrado
+  const [activeUserType, setActiveUserType] = useState('padres'); // Filtro principal (Pestañas)
+  const [activeCategory, setActiveCategory] = useState('Todas'); // Sub-filtro (Burbujas)
+  const [newsItems, setNewsItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = [
+  // Configuración de Pestañas Principales (UserType)
+  const userTypes = [
     { id: 'padres', label: 'Padres y Familias', icon: <Users size={16} />, color: 'bg-fupagua-azul' },
     { id: 'especialistas', label: 'Especialistas', icon: <GraduationCap size={16} />, color: 'bg-fupagua-rojo' },
     { id: 'comunidad', label: 'Comunidad / PCD', icon: <Heart size={16} />, color: 'bg-fupagua-verde' },
   ];
 
-  const newsItems = [
-    {
-      id: 1,
-      userType: 'padres',
-      category: "Taller",
-      date: "25 Feb 2026",
-      title: "Manejo de Emociones en el Hogar",
-      description: "Un taller diseñado para dar respiro y herramientas a los padres de niños con TEA.",
-      image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800",
-      link: "https://instagram.com/fupagua"
-    },
-    {
-      id: 2,
-      userType: 'especialistas',
-      category: "Formación",
-      date: "10 Mar 2026",
-      title: "Simposio: Neurodiversidad",
-      description: "Actualización técnica para psicólogos y terapeutas sobre nuevos protocolos de intervención.",
-      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=800",
-      link: "https://instagram.com/fupagua"
-    },
-    {
-      id: 3,
-      userType: 'comunidad',
-      category: "Inclusión",
-      date: "05 Mar 2026",
-      title: "Emprendimiento Adaptado",
-      description: "Información sobre nuestros nuevos talleres de oficio para jóvenes con discapacidad.",
-      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=800",
-      link: "https://instagram.com/fupagua"
-    },
-    {
-      id: 4,
-      userType: 'padres',
-      category: "Institucional",
-      date: "01 Feb 2026",
-      title: "28 Años de Historia Fupagua",
-      description: "Conoce cómo nacimos en 1997 y nuestra evolución en el estado Guárico.",
-      image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800",
-      link: "#nosotros"
-    }
-  ];
+  // Configuración de Sub-Categorías (Content Category)
+  const categories = ['Todas', 'Noticias', 'Talleres Educativos', 'Blogs', 'Cursos'];
 
-  const filteredNews = newsItems.filter(item => item.userType === activeTab);
+  useEffect(() => {
+    const q = query(collection(db, "publicaciones"), orderBy("createdAt", "desc"));
+    const unsub = onSnapshot(q, (snap) => {
+      setNewsItems(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  // --- LÓGICA DE FILTRADO DOBLE ---
+  const filteredNews = newsItems.filter(item => {
+    const matchUser = item.userType === activeUserType;
+    const matchCategory = activeCategory === 'Todas' || item.category === activeCategory;
+    return matchUser && matchCategory;
+  });
 
   return (
-    // AJUSTE: pt-32 para evitar choque con Navbar y pb-24 para espacio libre
     <section id="noticias" className="pt-32 pb-24 bg-white overflow-hidden relative">
       
-      {/* Detalle decorativo de fondo */}
+      {/* NEWS Background Decor */}
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none opacity-[0.02] select-none">
-        <h2 className="text-[20vw] font-black uppercase italic leading-none text-right -mr-20">
-          NEWS
-        </h2>
+        <h2 className="text-[20vw] font-black uppercase italic leading-none text-right -mr-20">NEWS</h2>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        {/* Cabecera Principal - TITULO MEJORADO */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-10">
+        {/* Cabecera y Selector de Usuario (Pestañas) */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 gap-10">
           <div className="max-w-2xl">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }} 
-              whileInView={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3 mb-6"
-            >
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-fupagua-amarillo/20 rounded-lg">
-                <Lightbulb size={16} className="text-fupagua-amarillo" />
+                <Sparkles size={16} className="text-fupagua-amarillo" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">Centro de Información</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-fupagua-azul">Centro de Recursos</span>
             </motion.div>
 
             <h2 className="text-5xl md:text-8xl font-black text-slate-900 uppercase italic leading-[0.85] tracking-tighter">
               Contenido <br /> 
-              <span className="relative text-fupagua-azul font-light italic ml-2 md:ml-4">
-                Para Ti
-                <svg className="absolute -bottom-2 left-0 w-full h-4 text-fupagua-amarillo/40" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0 5 Q 25 0 50 5 T 100 5" stroke="currentColor" strokeWidth="6" fill="none" />
-                </svg>
-              </span>
+              <span className="relative text-fupagua-azul font-light italic ml-2 md:ml-4">Para Ti</span>
             </h2>
           </div>
 
-          {/* Selector (Tabs) */}
+          {/* Selector de Perfil (Padres, Especialistas, etc) */}
           <div className="flex flex-wrap gap-2 bg-slate-50 p-2 rounded-[25px] border border-slate-100 shadow-inner">
-            {categories.map((cat) => (
+            {userTypes.map((type) => (
               <button
-                key={cat.id}
-                onClick={() => setActiveTab(cat.id)}
+                key={type.id}
+                onClick={() => { setActiveUserType(type.id); setActiveCategory('Todas'); }}
                 className={`flex items-center gap-2 px-6 py-4 rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all ${
-                  activeTab === cat.id 
-                  ? `${cat.color} text-white shadow-xl scale-105` 
-                  : 'text-slate-400 hover:text-slate-600'
+                  activeUserType === type.id ? `${type.color} text-white shadow-xl scale-105` : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
-                {cat.icon} {cat.label}
+                {type.icon} {type.label}
               </button>
             ))}
           </div>
+        </div>
+
+        {/* --- NUEVO: SUB-FILTRO DE CATEGORÍAS (BURBUJAS) --- */}
+        <div className="flex items-center gap-4 mb-12 overflow-x-auto pb-4 no-scrollbar">
+          <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-xl text-slate-500 text-[10px] font-black uppercase">
+            <Filter size={14} /> Filtrar:
+          </div>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-5 py-2.5 rounded-full text-[10px] font-bold uppercase transition-all whitespace-nowrap border-2 ${
+                activeCategory === cat 
+                ? 'border-fupagua-azul bg-fupagua-azul text-white shadow-md' 
+                : 'border-slate-100 text-slate-400 hover:border-slate-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {/* Grid de Noticias */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredNews.map((news) => (
-              <motion.div
-                key={news.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -10 }}
-                className="group bg-white rounded-[45px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all flex flex-col"
-              >
-                <div className="relative h-60 overflow-hidden">
-                  <img 
-                    src={news.image} 
-                    alt={news.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute top-6 left-6">
-                    <span className="bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl text-[9px] font-black uppercase text-slate-900 flex items-center gap-2 shadow-lg">
-                      <Tag size={12} className="text-fupagua-amarillo" /> {news.category}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-8 flex flex-col flex-grow">
-                  <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase mb-4 tracking-widest">
-                    <Calendar size={12} className="text-fupagua-azul" /> {news.date}
-                  </div>
-                  
-                  <h3 className="text-2xl font-black uppercase italic text-slate-900 leading-tight mb-4 group-hover:text-fupagua-azul transition-colors">
-                    {news.title}
-                  </h3>
-                  
-                  <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8 flex-grow">
-                    {news.description}
-                  </p>
-
-                  <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
-                    <a 
-                      href={news.link}
-                      className="group/btn flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-fupagua-rojo transition-all"
-                    >
-                      Más detalles 
-                      <ArrowUpRight size={14} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                    </a>
-                    <button className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:bg-slate-900 hover:text-white transition-all">
-                      <Share2 size={16} />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
+              <NewsCard key={news.id} news={news} />
             ))}
           </AnimatePresence>
         </div>
 
-        {/* Footer Instagram */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="mt-20 p-10 md:p-14 bg-slate-900 rounded-[60px] text-center relative overflow-hidden group"
-        >
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fupagua-azul via-fupagua-amarillo to-fupagua-rojo" />
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
-              <Sparkles size={14} className="text-fupagua-amarillo" />
-              <span className="text-white text-[9px] font-black uppercase tracking-[0.3em]">Actualidad Diaria</span>
-            </div>
-            <h4 className="text-white text-2xl md:text-4xl font-black uppercase italic mb-8 max-w-2xl mx-auto leading-tight">
-              ¿Quieres estar al día <br className="hidden md:block"/> minuto a minuto?
-            </h4>
-            <a 
-              href="https://instagram.com/fupagua" 
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-3 bg-white px-10 py-5 rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] hover:bg-fupagua-amarillo transition-all shadow-xl shadow-white/5"
-            >
-              <Instagram size={20} /> Ver Instagram
-            </a>
-          </div>
-          <Instagram size={200} className="absolute -right-10 -bottom-10 text-white/5 rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
-        </motion.div>
+        {/* Mensaje Vacío */}
+        {filteredNews.length === 0 && !loading && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 bg-slate-50 rounded-[60px] border-2 border-dashed border-slate-200">
+             <p className="text-slate-400 font-black uppercase italic tracking-widest">
+               No hay {activeCategory !== 'Todas' ? activeCategory : 'publicaciones'} para esta sección todavía
+             </p>
+          </motion.div>
+        )}
 
-        {/* Mención Trayectoria */}
-        <div className="mt-12 text-center">
-            <p className="text-slate-300 font-black uppercase text-[10px] tracking-[0.5em]">
-              Desde 1997 • 28 años comunicando esperanza
-            </p>
-        </div>
       </div>
     </section>
+  );
+};
+
+// --- SUB-COMPONENTE NEWS CARD ---
+const NewsCard = ({ news }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const getYouTubeID = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url?.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const ytLink = news.links?.find(l => l.type === 'YouTube')?.url;
+  const ytID = getYouTubeID(ytLink);
+
+  return (
+    <motion.div
+      layout
+      onClick={() => setIsExpanded(!isExpanded)}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      className="group bg-white rounded-[45px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all flex flex-col cursor-pointer"
+    >
+      <div className={`relative overflow-hidden transition-all duration-500 bg-slate-100 ${isExpanded ? 'h-80' : 'h-64'}`}>
+        {ytID ? (
+          <iframe className="w-full h-full pointer-events-none scale-150" src={`https://www.youtube.com/embed/${ytID}?controls=0&mute=1&autoplay=1&loop=1&playlist=${ytID}`} frameBorder="0" />
+        ) : news.mediaType?.includes('video') ? (
+          <video src={news.mediaUrl} className="w-full h-full object-cover" autoPlay muted loop playsInline />
+        ) : (
+          <img src={news.mediaUrl || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={news.title} />
+        )}
+        <div className="absolute top-6 left-6">
+          <span className="bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl text-[9px] font-black uppercase text-fupagua-azul flex items-center gap-2 shadow-lg">
+            <Tag size={12} className="text-fupagua-amarillo" /> {news.category}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-8 flex flex-col flex-grow">
+        <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase mb-4 tracking-widest">
+          <Calendar size={12} className="text-fupagua-azul" /> 
+          {news.createdAt?.seconds ? new Date(news.createdAt.seconds * 1000).toLocaleDateString() : 'Reciente'}
+        </div>
+        
+        <h3 className="text-2xl font-black uppercase italic text-slate-900 leading-[1.1] mb-4 group-hover:text-fupagua-azul transition-colors line-clamp-2">
+          {news.title}
+        </h3>
+        
+        <p className={`text-slate-500 text-sm font-medium leading-relaxed mb-6 flex-grow ${isExpanded ? '' : 'line-clamp-2'}`}>
+          {news.description}
+        </p>
+
+        {isExpanded && news.links?.length > 0 && (
+          <div className="mb-6 space-y-2 animate-in fade-in slide-in-from-bottom-2">
+            {news.links.map((link, idx) => (
+              <a key={idx} href={link.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl text-[10px] font-black uppercase text-slate-900 hover:bg-fupagua-azul hover:text-white transition-all">
+                {link.type === 'YouTube' ? <Youtube size={14}/> : <ExternalLink size={14}/>} Ver {link.type} <ArrowUpRight size={14} />
+              </a>
+            ))}
+          </div>
+        )}
+
+        <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
+          <span className="text-[10px] font-black uppercase tracking-widest text-fupagua-rojo">
+            {isExpanded ? 'Cerrar' : 'Toca para leer más'}
+          </span>
+          <div className="p-3 bg-slate-50 rounded-2xl text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all">
+            <Share2 size={16} />
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
