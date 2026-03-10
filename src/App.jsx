@@ -1,6 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
+
+// FIREBASE
+import { auth } from './firebase'; 
+import { onAuthStateChanged } from 'firebase/auth';
 
 // Componentes Globales
 import Navbar from './components/Navbar';
@@ -13,8 +17,6 @@ import Presentation from './components/Presentation';
 import AboutUs from './components/AboutUs';
 import JoinUs from './components/JoinUs';
 import Donation from './components/Donation';
-
-// --- NUEVA IMPORTACIÓN: EL VISOR DE REELS Y FOTOS ---
 import GaleriaPublica from './components/GaleriaPublica';
 
 // Componentes Independientes
@@ -24,52 +26,71 @@ import Store from './components/Store';
 import Contact from "./components/Contact";
 import Testimonials from './components/Testimonials';
 
-// --- NUEVA IMPORTACIÓN: EL CEREBRO ADMINISTRATIVO ---
+// Componentes de Admin
 import AdminPanel from './admin/AdminPanel'; 
-
-// Componente Wrapper para manejar la visibilidad de elementos globales
+import Login from './admin/components/Login';
 const AppContent = () => {
   const location = useLocation();
-  
-  // Verificamos si estamos en la ruta de administración
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (currentUser) => {
+      console.log(" Firebase Auth Status:", currentUser ? "Conectado" : "Desconectado");
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
   const isAdminPath = location.pathname.startsWith('/admin');
+
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-white">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-fupagua-azul"></div>
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Verificando Credenciales...</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="relative min-h-screen bg-white">
-      {/* Solo mostramos Navbar y SocialFloat si NO estamos en el Admin */}
       {!isAdminPath && <Navbar />}
       {!isAdminPath && <SocialFloat />}
 
       <main>
-        <Routes>
-          {/* --- RUTA DE ADMINISTRACIÓN (DIRECCIÓN SECRETA) --- */}
-          <Route path="/admin/*" element={<AdminPanel />} />
+        {/* La key={user?.uid} obliga a React a refrescar las rutas cuando el usuario cambia */}
+        <Routes key={user ? user.uid : 'public'}>
+          
+          {/* --- RUTA DE ADMINISTRACIÓN PROTEGIDA --- */}
+          <Route 
+            path="/admin/*" 
+            element={user ? <AdminPanel /> : <Login />} 
+          />
 
-          {/* RUTA PRINCIPAL PÚBLICA (HOME) */}
+          {/* RUTA PRINCIPAL PÚBLICA */}
           <Route path="/" element={
             <>
               <Hero />
               <Presentation /> 
               <AboutUs />
-              
-              {/* --- AQUÍ APARECERÁ TU GALERÍA EN TIEMPO REAL --- */}
               <GaleriaPublica /> 
-
               <JoinUs />
               <Donation />
             </>
           } />
 
-          {/* RUTAS INDEPENDIENTES PÚBLICAS */}
           <Route path="/servicios" element={<Services />} />
           <Route path="/noticias" element={<News />} />
           <Route path="/tienda" element={<Store />} />
           <Route path="/contacto" element={<Contact />} />
           <Route path="/testimonios" element={<Testimonials />} />
+          
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
 
-      {/* Solo mostramos el Footer si NO estamos en el Admin */}
       {!isAdminPath && <Footer />}
     </div>
   );

@@ -1,31 +1,32 @@
 import React, { useState } from 'react';
 // IMPORTAMOS LOS COMPONENTES DE ESTRUCTURA
-import Login from './components/Login';
 import AdminSidebar from './components/shared/AdminSidebar';
 import WelcomeView from '../admin/components/dashboard/WelcomeView';
 
-// IMPORTAMOS LOS FORMULARIOS (Estadísticas ahora vive dentro de WelcomeView)
+// FIREBASE (Para el logout real)
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
+
+// IMPORTAMOS LOS FORMULARIOS
 import ContenidoForm from './components/Contenido/ContenidoForm';
 import TiendaForm from './components/TiendaForm';
 import GaleriaForm from './components/galeria/GaleriaForm';
 
 const AdminPanel = () => {
-  // Estado para la autenticación
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Ya no necesitamos isAuthenticated aquí porque App.jsx ya lo validó
   
   // Estado para la navegación entre módulos
   const [activeModule, setActiveModule] = useState('dashboard');
 
-  // Función para cerrar sesión
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setActiveModule('dashboard'); 
+  // Función para cerrar sesión real en Firebase
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Al cerrar sesión, App.jsx detectará que user es null y te sacará solo
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
+    }
   };
-
-  // 1. CONTROL DE ACCESO (GUARD)
-  if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />;
-  }
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] font-sans selection:bg-fupagua-azul selection:text-white">
@@ -41,7 +42,7 @@ const AdminPanel = () => {
       <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden custom-scrollbar">
         <div className="max-w-7xl mx-auto px-6 py-10 md:px-12">
           
-          {/* CABECERA DINÁMICA CON HISTORIA */}
+          {/* CABECERA DINÁMICA */}
           <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 pb-10">
             <div className="animate-in fade-in slide-in-from-left-6 duration-700">
               <div className="flex items-center gap-2 mb-3">
@@ -74,47 +75,37 @@ const AdminPanel = () => {
 
           {/* RENDERIZADO DINÁMICO DE MÓDULOS */}
           <section className="relative min-h-[60vh]">
-            
-            {/* 1. DASHBOARD INTEGRADO (Welcome + Análisis en un solo archivo) */}
             {activeModule === 'dashboard' && (
               <div className="animate-in fade-in zoom-in-95 duration-700">
                 <WelcomeView setActiveModule={setActiveModule} />
               </div>
             )}
 
-            {/* 2. CONTENIDO: Biblioteca (Noticias/PDFs) */}
             {activeModule === 'contenido' && (
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <ContenidoForm />
               </div>
             )}
 
-            {/* 3. TIENDA: Inventario Pro */}
             {activeModule === 'tienda' && (
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <TiendaForm />
               </div>
             )}
 
-            {/* 4. GALERÍA: Fupagua en Acción */}
             {activeModule === 'galeria' && (
               <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <GaleriaForm />
               </div>
             )}
-            
           </section>
 
-          {/* FOOTER DEL SISTEMA ACTUALIZADO */}
+          {/* FOOTER */}
           <footer className="mt-20 pt-8 border-t border-slate-50 flex justify-between items-center text-slate-300">
               <p className="text-[9px] font-black uppercase tracking-[0.3em]">
                 © 2026 FUPAGUA - FUNDACIÓN DE PERSONAS AUTISTAS DEL GUARICO
               </p>
-              <div className="flex gap-4">
-                 <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-[8px] font-black text-slate-300 border border-slate-100 italic">28</div>
-              </div>
           </footer>
-
         </div>
       </main>
     </div>

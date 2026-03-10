@@ -12,6 +12,7 @@ import {
 // ==========================================
 // 1. COMPONENTE: FORMULARIO DE EVALUACIÓN
 // ==========================================
+   
 const EvaluationForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     representante: '', niño: '', edad: '', cedula: '', motivo: ''
@@ -28,7 +29,7 @@ const EvaluationForm = ({ onSuccess }) => {
       if (response.ok) {
         alert("¡Registro Exitoso! Su solicitud ha sido enviada.");
         onSuccess();
-      } else { throw new Error('Error'); }
+      } else { throw new Error('Error'); }   
     } catch (error) {
       alert("Hubo un problema de conexión. Por favor, intente vía WhatsApp.");
     }
@@ -108,7 +109,7 @@ const Services = () => {
     { id: 10, title: "Comunicación", icon: <MessageCircle size={24} />, color: "shadow-fupagua-rojo/10", glowColor: "group-hover:border-fupagua-rojo", description: "Terapia del lenguaje, arteterapia y masajes.", isSpecialGroup: true, team: [{ name: "Carmen Yarisma Molina", role: "Terapista del Lenguaje" }], details: "Arteterapia con mandalas, masaje infantil y trastornos de comunicación.", image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=800&auto=format&fit=crop", phone: "584243390902" },
     { id: 11, title: "Hidroterapia", icon: <Waves size={24} />, color: "shadow-fupagua-azul/10", glowColor: "group-hover:border-fupagua-azul", description: "Rehabilitación física en piscina termal.", isSpecialGroup: true, team: [{ name: "Guillermo Garcés", role: "Medicina de Rehabilitación" }, { name: "Lcda. Andrea Figueroa", role: "Fisioterapeuta" }], details: "Plan individualizado de rehabilitación física en ambiente acuático.", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800&auto=format&fit=crop", phone: "584243390902" },
     { id: 12, title: "Biblioteca Juana Milano", icon: <Library size={24} />, color: "shadow-fupagua-azul/10", glowColor: "group-hover:border-fupagua-azul", description: "Préstamo de material bibliográfico y audiovisual.", isSpecialGroup: true, team: [{ name: "Prof. Jeroh Montilla", role: "Bibliotecario" }, { name: "Melisa Farfán", role: "Auxiliar" }], details: "Recolección, organización y actividades de expansión cultural.", image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=800&auto=format&fit=crop", phone: "584243390902" }
-  ];
+];
 
   const RatingStars = () => (
     <div className="flex gap-0.5">
