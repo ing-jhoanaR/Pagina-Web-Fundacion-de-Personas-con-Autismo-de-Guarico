@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -220,6 +221,9 @@ const Services = () => {
     { 
       id: 7, 
       title: "Bienestar Humano", 
+      isWhatsApp: true,
+      whatsapp: "584124357774",
+      message: "Hola, deseo información sobre las clases de Bienestar Humano y Masaje Infantil.",
       icon: <Baby size={24} />, 
       specialists: [
         { 
@@ -233,6 +237,9 @@ const Services = () => {
     { 
       id: 8, 
       title: "Apoyo Pedagógico", 
+      isWhatsApp: true,
+      whatsapp: "584124357774",
+      message: "Hola, necesito información sobre el Reforzamiento Académico y Apoyo Pedagógico.",
       icon: <GraduationCap size={24} />, 
       specialists: [
         { 
@@ -252,6 +259,9 @@ const Services = () => {
     { 
       id: 9, 
       title: "Arte y Cultura", 
+      isWhatsApp: true,
+      whatsapp: "584124357774",
+      message: "Hola, quisiera saber sobre las clases de música e instrumentos en FUPAGUA.",
       icon: <Music size={24} />, 
       specialists: [
         { 
@@ -271,6 +281,9 @@ const Services = () => {
     { 
       id: 10, 
       title: "Aula Integral", 
+      isWhatsApp: true,
+      whatsapp: "584124357774",
+      message: "Hola, me interesa el servicio de Aula Integral para atención pedagógica grupal.",
       icon: <School size={24} />, 
       specialists: [
         { 
@@ -297,6 +310,9 @@ const Services = () => {
     { 
       id: 12, 
       title: "Hidroterapia", 
+      isWhatsApp: true,
+      whatsapp: "584124357774",
+      message: "Hola, deseo información sobre la rehabilitación en piscina (Hidroterapia).",
       icon: <Waves size={24} />, 
       specialists: [
         { 
@@ -322,6 +338,15 @@ const Services = () => {
     }
   ];
 
+  const handleAction = (service, specialistName) => {
+    if (service.isWhatsApp) {
+      const url = `https://wa.me/${service.whatsapp}?text=${encodeURIComponent(service.message)}`;
+      window.open(url, '_blank');
+    } else {
+      setActiveWaitingList({ service: service.title, spec: specialistName });
+    }
+  };
+
   return (
     <section id="servicios" className="py-24 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
@@ -329,7 +354,6 @@ const Services = () => {
           Nuestros <span className="text-fupagua-azul">Servicios</span>
         </h2>
         
-        {/* GRID DE ACCESO A SERVICIOS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((s) => (
             <motion.div 
@@ -353,103 +377,60 @@ const Services = () => {
       <AnimatePresence>
         {selectedService && (
           <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
             className="fixed inset-0 z-[500] flex items-center justify-center p-4 backdrop-blur-3xl bg-slate-900/80 overflow-y-auto"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }} 
-              animate={{ scale: 1, y: 0 }} 
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} 
               className="bg-white w-full max-w-6xl rounded-[60px] overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]"
             >
-              
-              <button 
-                onClick={() => setSelectedService(null)} 
-                className="absolute top-8 right-8 z-[510] p-3 bg-slate-100 rounded-full hover:bg-fupagua-rojo hover:text-white transition-all shadow-lg"
-              >
+              <button onClick={() => setSelectedService(null)} className="absolute top-8 right-8 z-[510] p-3 bg-slate-100 rounded-full hover:bg-fupagua-rojo hover:text-white transition-all shadow-lg">
                 <X size={24} />
               </button>
 
               <div className="p-8 md:p-20 overflow-y-auto">
                 {selectedService.isPremium ? (
-                  /* VISTA DETALLADA: EVALUACIÓN INTEGRAL (CON ESPECIFICACIONES) */
                   <div className="grid md:grid-cols-2 gap-16 items-start">
                     <div>
-                      <span className="bg-fupagua-azul text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] italic mb-6 inline-block">
-                        Protocolo Institucional
-                      </span>
-                      <h4 className="text-5xl md:text-6xl font-black text-slate-900 uppercase italic leading-none mb-8 tracking-tighter">
-                        {selectedService.title}
-                      </h4>
-                      <p className="text-slate-500 text-lg italic mb-10 leading-relaxed border-l-4 border-fupagua-amarillo pl-6">
-                        "{selectedService.details}"
-                      </p>
-                      
+                      <span className="bg-fupagua-azul text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] italic mb-6 inline-block">Protocolo Institucional</span>
+                      <h4 className="text-5xl md:text-6xl font-black text-slate-900 uppercase italic leading-none mb-8 tracking-tighter">{selectedService.title}</h4>
+                      <p className="text-slate-500 text-lg italic mb-10 leading-relaxed border-l-4 border-fupagua-amarillo pl-6">"{selectedService.details}"</p>
                       <div className="space-y-4 mb-12">
                         {selectedService.specifications.map((spec, i) => (
                           <div key={i} className="flex items-center gap-4 group">
-                            <div className="h-6 w-6 rounded-full bg-fupagua-azul/10 flex items-center justify-center text-fupagua-azul group-hover:bg-fupagua-azul group-hover:text-white transition-colors">
-                              <CheckCircle2 size={14} />
-                            </div>
-                            <span className="text-[11px] font-black uppercase text-slate-700 tracking-wider leading-none">
-                              {spec}
-                            </span>
+                            <div className="h-6 w-6 rounded-full bg-fupagua-azul/10 flex items-center justify-center text-fupagua-azul group-hover:bg-fupagua-azul group-hover:text-white transition-colors"><CheckCircle2 size={14} /></div>
+                            <span className="text-[11px] font-black uppercase text-slate-700 tracking-wider leading-none">{spec}</span>
                           </div>
                         ))}
                       </div>
-
-                      <button 
-                        onClick={() => setActiveWaitingList({ service: selectedService.title, spec: "Equipo Técnico Multidisciplinario" })}
-                        className="w-full bg-fupagua-azul text-white py-6 rounded-[30px] font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:shadow-fupagua-azul/40 transition-all flex items-center justify-center gap-4"
-                      >
+                      <button onClick={() => handleAction(selectedService, "Equipo Técnico")} className="w-full bg-fupagua-azul text-white py-6 rounded-[30px] font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:shadow-fupagua-azul/40 transition-all flex items-center justify-center gap-4">
                         <Sparkles size={20} /> Solicitar Evaluación de Ingreso
                       </button>
                     </div>
-                    <div className="hidden md:block">
-                      <img 
-                        src={selectedService.image} 
-                        className="w-full h-[600px] object-cover rounded-[50px] shadow-2xl rotate-1 group-hover:rotate-0 transition-transform duration-700" 
-                        alt="Evaluación Institucional" 
-                      />
-                    </div>
+                    <div className="hidden md:block"><img src={selectedService.image} className="w-full h-[600px] object-cover rounded-[50px] shadow-2xl rotate-1 group-hover:rotate-0 transition-transform duration-700" alt="Evaluación Institucional" /></div>
                   </div>
                 ) : (
-                  /* VISTA DETALLADA: ESPECIALISTAS POR SERVICIO */
                   <div>
                     <div className="text-center mb-16">
-                      <h4 className="text-5xl font-black text-slate-900 uppercase italic leading-none tracking-tighter">
-                        {selectedService.title}
-                      </h4>
+                      <h4 className="text-5xl font-black text-slate-900 uppercase italic leading-none tracking-tighter">{selectedService.title}</h4>
                       <div className="h-2 w-20 bg-fupagua-amarillo mx-auto mt-6 rounded-full"></div>
                     </div>
-                    
                     <div className={`grid gap-8 ${selectedService.specialists?.length > 1 ? 'md:grid-cols-2' : 'max-w-xl mx-auto'}`}>
                       {selectedService.specialists?.map((spec, i) => (
                         <div key={i} className="bg-slate-50 rounded-[50px] border border-slate-100 overflow-hidden flex flex-col group shadow-sm hover:shadow-md transition-all">
                           <div className="h-64 overflow-hidden relative">
-                            <img 
-                              src={spec.image} 
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
-                              alt={spec.name} 
-                            />
+                            <img src={spec.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt={spec.name} />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
                           </div>
                           <div className="p-10 flex flex-col flex-grow">
-                            <h5 className="text-2xl font-black uppercase italic text-slate-900 mb-1 leading-none tracking-tight">
-                              {spec.name}
-                            </h5>
-                            <p className="text-fupagua-azul font-black text-[10px] uppercase tracking-[0.2em] mb-6">
-                              {spec.role}
-                            </p>
-                            <p className="text-slate-500 text-[13px] italic mb-10 leading-relaxed flex-grow">
-                              "{spec.bio}"
-                            </p>
+                            <h5 className="text-2xl font-black uppercase italic text-slate-900 mb-1 leading-none tracking-tight">{spec.name}</h5>
+                            <p className="text-fupagua-azul font-black text-[10px] uppercase tracking-[0.2em] mb-6">{spec.role}</p>
+                            <p className="text-slate-500 text-[13px] italic mb-10 leading-relaxed flex-grow">"{spec.bio}"</p>
                             <button 
-                              onClick={() => setActiveWaitingList({ service: selectedService.title, spec: spec.name })}
-                              className="w-full bg-slate-900 text-white py-5 rounded-[25px] font-black uppercase text-[10px] tracking-widest hover:bg-fupagua-azul transition-all flex items-center justify-center gap-3"
+                              onClick={() => handleAction(selectedService, spec.name)}
+                              className={`w-full py-5 rounded-[25px] font-black uppercase text-[10px] tracking-widest transition-all flex items-center justify-center gap-3 ${selectedService.isWhatsApp ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-slate-900 text-white hover:bg-fupagua-azul'}`}
                             >
-                              <User size={16} /> Entrar en Sala de Espera
+                              {selectedService.isWhatsApp ? <><MessageCircle size={16} /> Contactar WhatsApp</> : <><User size={16} /> Entrar en Sala de Espera</>}
                             </button>
                           </div>
                         </div>
@@ -462,13 +443,8 @@ const Services = () => {
           </motion.div>
         )}
 
-        {/* MODAL NIVEL 2: FORMULARIO */}
         {activeWaitingList && (
-          <WaitingListForm 
-            serviceName={activeWaitingList.service} 
-            specialistName={activeWaitingList.spec} 
-            onClose={() => setActiveWaitingList(null)} 
-          />
+          <WaitingListForm serviceName={activeWaitingList.service} specialistName={activeWaitingList.spec} onClose={() => setActiveWaitingList(null)} />
         )}
       </AnimatePresence>
     </section>
