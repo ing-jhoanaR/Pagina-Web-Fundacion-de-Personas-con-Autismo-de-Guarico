@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -14,15 +13,44 @@ import {
 const WaitingListForm = ({ serviceName, specialistName, onClose }) => {
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulación de envío a Firebase/Backend
-    setTimeout(() => {
-      alert(`Registro exitoso. El equipo de FUPAGUA procesará la solicitud para ${serviceName}.`);
+
+    const formData = new FormData(e.target);
+    const data = {
+      representante: formData.get('representante'),
+      paciente: formData.get('paciente'),
+      edad: formData.get('edad'),
+      cedula: formData.get('cedula'),
+      motivo: formData.get('motivo'),
+      servicio: serviceName,
+      especialista: specialistName,
+      fecha_registro: new Date().toISOString()
+    };
+
+    try {
+      // Reemplaza la URL con la del túnel que acordamos para el sistema
+      const response = await fetch('URL_DEL_TUNEL_ACORDADO/api/espera', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        alert(`Registro exitoso en el sistema de gestión. El equipo de FUPAGUA procesará la solicitud para ${serviceName}.`);
+        onClose();
+      } else {
+        throw new Error('Error en la respuesta del servidor');
+      }
+    } catch (error) {
+      console.error("Error al conectar con el túnel:", error);
+      alert("Error de conexión: No se pudo contactar con el sistema local. Verifique que el túnel esté activo.");
+    } finally {
       setLoading(false);
-      onClose();
-    }, 1500);
+    }
   };
 
   return (
@@ -59,28 +87,28 @@ const WaitingListForm = ({ serviceName, specialistName, onClose }) => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5">
           <div className="space-y-1">
             <label className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest italic">Nombre del Representante</label>
-            <input required type="text" placeholder="Ej. Juan Pérez" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
+            <input name="representante" required type="text" placeholder="Ej. Juan Pérez" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest italic">Nombre del Paciente</label>
-              <input required type="text" placeholder="Nombre del niño/a" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
+              <input name="paciente" required type="text" placeholder="Nombre del niño/a" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
             </div>
             <div className="space-y-1">
               <label className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest italic">Edad</label>
-              <input required type="number" placeholder="Años" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
+              <input name="edad" required type="number" placeholder="Años" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
             </div>
           </div>
 
           <div className="space-y-1">
             <label className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest italic">Cédula de Identidad</label>
-            <input required type="text" placeholder="V-00.000.000" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
+            <input name="cedula" required type="text" placeholder="V-00.000.000" className="w-full bg-slate-50 border border-slate-100 rounded-[25px] py-5 px-8 text-xs outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
           </div>
 
           <div className="space-y-1">
             <label className="text-[9px] font-black text-slate-400 uppercase ml-4 tracking-widest italic">Motivo de la Consulta</label>
-            <textarea required placeholder="Describa brevemente la situación..." className="w-full bg-slate-50 border border-slate-100 rounded-[30px] py-5 px-8 text-xs h-32 resize-none outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
+            <textarea name="motivo" required placeholder="Describa brevemente la situación..." className="w-full bg-slate-50 border border-slate-100 rounded-[30px] py-5 px-8 text-xs h-32 resize-none outline-none focus:ring-2 focus:ring-fupagua-azul transition-all" />
           </div>
           
           <button 
@@ -88,7 +116,7 @@ const WaitingListForm = ({ serviceName, specialistName, onClose }) => {
             disabled={loading} 
             className="w-full bg-fupagua-azul text-white py-6 rounded-[30px] font-black uppercase text-[11px] tracking-[0.3em] shadow-2xl shadow-fupagua-azul/30 hover:bg-slate-900 transition-all flex items-center justify-center gap-4 mt-2"
           >
-            {loading ? "Registrando..." : <><Send size={18} /> Confirmar Solicitud</>}
+            {loading ? "Sincronizando..." : <><Send size={18} /> Confirmar Solicitud</>}
           </button>
         </form>
       </motion.div>
@@ -209,6 +237,9 @@ const Services = () => {
       id: 6, 
       title: "Yoga", 
       icon: <Smile size={24} />, 
+      isWhatsApp: true,
+      whatsapp: "584124357774",
+      message: "Hola, deseo información sobre las clases de Yoga en FUPAGUA.",
       specialists: [
         { 
           name: "Lcda. Tibisay Vargas R.", 
@@ -327,6 +358,8 @@ const Services = () => {
       id: 13, 
       title: "Biblioteca", 
       icon: <BookOpen size={24} />, 
+      horario: "Lunes a Viernes: 8:30 AM a 11:30 AM",
+      isNoButton: true,
       specialists: [
         { 
           name: "Prof. Jeroh Montilla", 
@@ -404,7 +437,7 @@ const Services = () => {
                         ))}
                       </div>
                       <button onClick={() => handleAction(selectedService, "Equipo Técnico")} className="w-full bg-fupagua-azul text-white py-6 rounded-[30px] font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:shadow-fupagua-azul/40 transition-all flex items-center justify-center gap-4">
-                        <Sparkles size={20} /> Solicitar Evaluación de Ingreso
+                        <span className="flex items-center gap-2"><Sparkles size={20} /> Solicitar Evaluación de Ingreso</span>
                       </button>
                     </div>
                     <div className="hidden md:block"><img src={selectedService.image} className="w-full h-[600px] object-cover rounded-[50px] shadow-2xl rotate-1 group-hover:rotate-0 transition-transform duration-700" alt="Evaluación Institucional" /></div>
@@ -426,12 +459,20 @@ const Services = () => {
                             <h5 className="text-2xl font-black uppercase italic text-slate-900 mb-1 leading-none tracking-tight">{spec.name}</h5>
                             <p className="text-fupagua-azul font-black text-[10px] uppercase tracking-[0.2em] mb-6">{spec.role}</p>
                             <p className="text-slate-500 text-[13px] italic mb-10 leading-relaxed flex-grow">"{spec.bio}"</p>
-                            <button 
-                              onClick={() => handleAction(selectedService, spec.name)}
-                              className={`w-full py-5 rounded-[25px] font-black uppercase text-[10px] tracking-widest transition-all flex items-center justify-center gap-3 ${selectedService.isWhatsApp ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-slate-900 text-white hover:bg-fupagua-azul'}`}
-                            >
-                              {selectedService.isWhatsApp ? <><MessageCircle size={16} /> Contactar WhatsApp</> : <><User size={16} /> Entrar en Sala de Espera</>}
-                            </button>
+                            
+                            {selectedService.isNoButton ? (
+                              <div className="mt-auto bg-fupagua-amarillo/10 border border-fupagua-amarillo/30 p-6 rounded-[30px] text-center">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1 italic">Horario de Atención</p>
+                                <p className="text-xs font-black text-slate-900 uppercase italic tracking-wider">{selectedService.horario}</p>
+                              </div>
+                            ) : (
+                              <button 
+                                onClick={() => handleAction(selectedService, spec.name)}
+                                className={`w-full py-5 rounded-[25px] font-black uppercase text-[10px] tracking-widest transition-all flex items-center justify-center gap-3 ${selectedService.isWhatsApp ? 'bg-green-600 text-white hover:bg-green-700 shadow-xl shadow-green-100' : 'bg-slate-900 text-white hover:bg-fupagua-azul shadow-xl shadow-slate-200'}`}
+                              >
+                                {selectedService.isWhatsApp ? <><MessageCircle size={16} /> Contactar WhatsApp</> : <><User size={16} /> Entrar en Sala de Espera</>}
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
